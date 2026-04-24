@@ -6,15 +6,15 @@ title: 變星科展記事
 # 變星觀測筆記
 
 ## 基礎知識
-- [變星的定義與分類](https://hackmd.io/6ThFvs1dSPSTpl0i4Svb0g)
-- [視星等標準值取樣](https://hackmd.io/SiYbZBlRSAWQu6OtZhLSVA)
+- [變星的定義與分類](./變星的定義與分類資料彙整.md)
+- [視星等標準值取樣](./視星等標準值取樣.md)
 
 ## 觀測技術
 - [AAVSO DSLR 變星觀測與影像處理技術指南](https://drive.google.com/file/d/1-RE-qH3Nlm1cyJ08cF3djaKoJLIIhctx/view)
 
 ## 影像處理
-- [天文影像校正](https://hackmd.io/606JKkS_T328LRR_fpcLoQ)
-- [相機線性測定](https://hackmd.io/JdDyVaZgSiaJ_c3m_Wpeuw)
+- [天文影像校正](./天文影像校正.md)
+- [相機線性測定](./相機線性測定.md)
 
 ## 測光管線開發
 - [pipeline_workflow](https://drive.google.com/file/d/135mjTFUwunfsSPb4YAuO9faDH2mkNzQ6/view)
@@ -22,18 +22,18 @@ title: 變星科展記事
 - [參考星權重](https://drive.google.com/file/d/1psvomc1rrwenON7Ddwejy-ic-JHYojGA/view)
 
 ## 軟體實務
-- [本機部署指南](https://hackmd.io/U_ncsFI2SxqiHOtIjcGspA)
+- [本機部署指南](./本機部署指南.md)
 - [VSCODE安裝指南](https://hackmd.io/HGitasQaQryT5Gv3RlOwog)
 - [ASTROIMAGEJ](https://drive.google.com/file/d/1y-1VdDwWUaKy2GjmVk2kLEoG_v2aFVzg/view)
 
 ## 實測案例
-- [V1162 Ori 現況整理](https://hackmd.io/Db66P1cmRaK1BSudTojbMg)
+- [V1162 Ori 現況整理](./V1162 Ori 現況整理.md)
 - [TEMP（實驗資料）](https://drive.google.com/file/d/1SIdMmypa3C7gzBMzWyRzuDKzBzkymth-/view)
 
 ## 科展準備
-- [變星科展文獻回顧](https://hackmd.io/MBOMRx-vSEKbQp_CrypFdA)
-- [專業軟體學理比較](https://hackmd.io/jd-a1W37Qo-b-8dVPbwxxg)
-- [科展說明書和講稿指引](https://hackmd.io/8-0vQ33_RVe18zirIntdpw)
+- [變星科展文獻回顧](./變星科展文獻回顧.md)
+- [專業軟體學理比較](./專業軟體學理比較.md)
+- [科展說明書和講稿指引](./科展說明書和講稿指引.md)
 - [GEMINI的摘要](https://drive.google.com/file/d/1h_fQPCIVMDRd5UyP6lWtr2qIzYH0mChv/view)
 - [GEMINI 3 pro 的意見](https://drive.google.com/file/d/1kJyVjAiLDJxd4-Wg-Mh3tEnjsVN0MjZG/view)
 
