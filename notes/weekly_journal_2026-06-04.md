@@ -1,19 +1,19 @@
 # 本週科學期刊 — 2026-06-04
 
-### Science        Volume 392, Issue 6801
+### SCIENCE | Volume 392, Issue 6801
 
 1. [可视化小鼠脓毒症期间肺部中性粒细胞-血小板免疫血栓级联反应](https://doi.org/10.1126/science.adv0377)
 2. [赤铁矿是火星古代气候变化的矿物学标志物](https://doi.org/10.1126/science.adv5447)
 3. [通过银纳米晶体的形貌控制稳定超晶格的过渡相](https://doi.org/10.1126/science.ady6472)
 4. [东南极洲下方的上地幔地震](https://doi.org/10.1126/science.aea9895)
-5. [强负载铂簇催化性能与原子数的相关性](https://doi.org/10.1126/science.aeb3087)
+5. [强负载铂簇催化性能与原子数的关系](https://doi.org/10.1126/science.aeb3087)
 6. [锂硬岩精矿高值化为电池原材料和大宗商品](https://doi.org/10.1126/science.aec4652)
 7. [停止阶段揭示大型走滑地震的突然停止](https://doi.org/10.1126/science.aef3733)
 8. [基于机械谐振器的量子计算](https://doi.org/10.1126/science.aef4139)
 9. [选择性自噬微调植物免疫以促进病毒感染期间的细胞存活](https://doi.org/10.1126/science.adu9554)
 10. [信鸽导航在阴天条件下依赖超顺磁性巨噬细胞](https://doi.org/10.1126/science.ady2486)
 11. [大象对粪甲虫生物多样性和生态系统功能的重要性](https://doi.org/10.1126/science.aeb7062)
-12. [应变弹性本征可拉伸电化学生物界面](https://doi.org/10.1126/science.aed1630)
+12. [具有应变弹性的本征可拉伸电化学生物界面](https://doi.org/10.1126/science.aed1630)
 13. [短暂射频噪声暴露对迁徙蝙蝠导航的破坏性影响](https://doi.org/10.1126/science.adq4418)
 14. [泛癌三级淋巴结构空间图谱](https://doi.org/10.1126/science.adz2742)
 15. [一种用于速效共价蛋白药物的高通量筛选系统](https://doi.org/10.1126/science.adv3081)
@@ -23,42 +23,42 @@
 
 編輯選文：[In Other Journals](https://doi.org/10.1126/science.aei9225)
 
-### Crossref 2026-05-29 to 2026-06-04
-
-**Vol. 654, Issue 8117**
+### NATURE | Vol. 654, Issue 8117
 
 1. [热带植被总初级生产力的规模](https://doi.org/10.1038/s41586-026-10562-z)
 2. [力敏基团交联增强聚合物的弹道能量耗散](https://doi.org/10.1038/s41586-026-10557-w)
-3. [木星及其以外弓形激波处的相对论电子加速。](https://doi.org/10.1038/s41586-026-10473-z)
-4. [牙釉质纳米晶体错向随食肉和农业发展而增加。](https://doi.org/10.1038/s41586-026-10583-8)
-5. [使用Mamyshev振荡器的高脉冲能量集成锁模激光器。](https://doi.org/10.1038/s41586-026-10517-4)
-6. [回复：热带植被总初级生产力的规模。](https://doi.org/10.1038/s41586-026-10561-0)
+3. [Relativistic electron acceleration at the bow shock of Jupiter and beyond](https://doi.org/10.1038/s41586-026-10473-z)
+4. [Enamel nanocrystal misorientation increased with meat-eating and agriculture](https://doi.org/10.1038/s41586-026-10583-8)
+5. [High-pulse-energy integrated mode-locked laser using a Mamyshev oscillator](https://doi.org/10.1038/s41586-026-10517-4)
+6. [Reply to: The size of tropical vegetation gross primary production](https://doi.org/10.1038/s41586-026-10561-0)
 
-**線上先行**
+### NATURE | CrossRef this week (PDF Maybe)
 
-1. [共生菌来源的乙酰胆碱增强黏膜免疫教育](https://doi.org/10.1038/s41586-026-10592-7)
-2. [采矿引发撒哈拉以南非洲广泛的额外森林砍伐](https://doi.org/10.1038/s41586-026-10551-2)
+*2026-05-29 to 2026-06-04*
+
+1. [采矿引发撒哈拉以南非洲广泛的额外森林砍伐](https://doi.org/10.1038/s41586-026-10551-2)
+2. [共生菌来源的乙酰胆碱增强黏膜免疫教育](https://doi.org/10.1038/s41586-026-10592-7)
 3. [室温下钙钛矿超晶格的手性超荧光](https://doi.org/10.1038/s41586-026-10637-x)
-4. [着丝粒足迹维持ALT癌症中的端粒完整性](https://doi.org/10.1038/s41586-026-10598-1)
-5. [编辑关注声明：体内诱导蛋白水解对DNA复制蛋白的功能蛋白质组学鉴定](https://doi.org/10.1038/s41586-026-10727-w)
+4. [着丝粒足迹维持ALT型癌症的端粒完整性](https://doi.org/10.1038/s41586-026-10598-1)
+5. [编辑部关注声明：通过体内诱导蛋白水解对DNA复制蛋白进行功能蛋白质组学鉴定](https://doi.org/10.1038/s41586-026-10727-w)
 6. [核壳层结构支配短程核子配对](https://doi.org/10.1038/s41586-026-10616-2)
-7. [公共物品分配中，合作与平等相冲突。](https://doi.org/10.1038/s41586-026-10550-3)
-8. [分拣后塑料包装的权衡分析。](https://doi.org/10.1038/s41586-026-10606-4)
-9. [蜂王房结构影响蜜蜂蜂王的发育。](https://doi.org/10.1038/s41586-026-10534-3)
-10. [一种天然缩肽抗生素结合细菌核糖体的E位点。](https://doi.org/10.1038/s41586-026-10589-2)
-11. [质体球在玉米中区室化氮同化作用。](https://doi.org/10.1038/s41586-026-10610-8)
-12. [大刍草等位基因增强玉米的氮同化和种子蛋白。](https://doi.org/10.1038/s41586-026-10575-8)
-13. [高保真模块化骨骼证实苔藓虫起源于寒武纪。](https://doi.org/10.1038/s41586-026-10590-9)
-14. [亚精胺是一种抑制铁死亡的内源性铁螯合剂。](https://doi.org/10.1038/s41586-026-10597-2)
-15. [冷诱导肽信号确保花粉抗逆性和作物产量。](https://doi.org/10.1038/s41586-026-10603-7)
-16. [LASER偶联损伤感知与ESCRT组装以修复溶酶体。](https://doi.org/10.1038/s41586-026-10604-6)
-17. [地球东西向反照率对称性。](https://doi.org/10.1038/s41586-026-10624-2)
-18. [IDH突变型胶质瘤进展中的获得性遗传和细胞状态变化。](https://doi.org/10.1038/s41586-026-10612-6)
-19. [细胞类型分辨的遗传变异影响炎症性肠病风险。](https://doi.org/10.1038/s41586-026-10627-z)
-20. [作者更正：灵长类脊髓中CHIT1阳性小胶质细胞驱动运动神经元衰老。](https://doi.org/10.1038/s41586-026-10728-9)
-21. [出版商更正：人类寿命白质微观和宏观结构大脑图谱。](https://doi.org/10.1038/s41586-026-10693-3)
-22. [日常生活中智能手机使用期间的被动心率监测。](https://doi.org/10.1038/s41586-026-10507-6)
-23. [通过非共价催化剂组装的对映选择性氢原子接力。](https://doi.org/10.1038/s41586-026-10692-4)
-24. [作者更正：SARS-CoV-2奥密克戎变异株融合性和致病性减弱。](https://doi.org/10.1038/s41586-026-10665-7)
-25. [作者更正：来自近一百万次航空现场测量的美国油气系统排放。](https://doi.org/10.1038/s41586-026-10605-5)
-26. [作者更正：扭曲MoTe2双层中分数填充的隐藏态和动力学。](https://doi.org/10.1038/s41586-026-10717-y)
+7. [Cooperation conflicts with equality when allocating public goods](https://doi.org/10.1038/s41586-026-10550-3)
+8. [Analysis of trade-offs of post-sorting plastic packaging](https://doi.org/10.1038/s41586-026-10606-4)
+9. [Queen cell architecture shapes honey bee queen development](https://doi.org/10.1038/s41586-026-10534-3)
+10. [A natural depsipeptide antibiotic binds the E-site of the bacterial ribosome](https://doi.org/10.1038/s41586-026-10589-2)
+11. [Plastoglobules compartmentalize nitrogen assimilation in maize](https://doi.org/10.1038/s41586-026-10610-8)
+12. [Teosinte alleles enhance nitrogen assimilation and seed protein in maize](https://doi.org/10.1038/s41586-026-10575-8)
+13. [High-fidelity modular skeletons authenticate a Cambrian origin for Bryozoa](https://doi.org/10.1038/s41586-026-10590-9)
+14. [Spermine is an endogenous iron chelator that inhibits ferroptosis](https://doi.org/10.1038/s41586-026-10597-2)
+15. [Cold-induced peptide signalling secures pollen resilience and crop yield](https://doi.org/10.1038/s41586-026-10603-7)
+16. [LASER couples damage sensing to ESCRT assembly for lysosome repair](https://doi.org/10.1038/s41586-026-10604-6)
+17. [Earth’s east–west albedo symmetry](https://doi.org/10.1038/s41586-026-10624-2)
+18. [Acquired genetic and cell-state changes in IDH-mutant glioma progression](https://doi.org/10.1038/s41586-026-10612-6)
+19. [Cell-type-resolved genetic variation shapes inflammatory bowel disease risk](https://doi.org/10.1038/s41586-026-10627-z)
+20. [Author Correction: CHIT1-positive microglia drive motor neuron ageing in the primate spinal cord](https://doi.org/10.1038/s41586-026-10728-9)
+21. [Publisher Correction: White matter micro- and macrostructure brain charts for the human lifespan](https://doi.org/10.1038/s41586-026-10693-3)
+22. [Passive heart-rate monitoring during smartphone use in everyday life](https://doi.org/10.1038/s41586-026-10507-6)
+23. [Enantioselective hydrogen atom relay via non-covalent catalyst assembly](https://doi.org/10.1038/s41586-026-10692-4)
+24. [Author Correction: Attenuated fusogenicity and pathogenicity of SARS-CoV-2 Omicron variant](https://doi.org/10.1038/s41586-026-10665-7)
+25. [Author Correction: US oil and gas system emissions from nearly one million aerial site measurements](https://doi.org/10.1038/s41586-026-10605-5)
+26. [Author Correction: Hidden states and dynamics of fractional fillings in twisted MoTe2 bilayers](https://doi.org/10.1038/s41586-026-10717-y)
