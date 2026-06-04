@@ -1,38 +1,38 @@
 # 本週科學期刊 — 2026-06-04
 
-### Science Volume 392, Issue 6801
+### Science<span style="margin-right: 2em"></span>Volume 392, Issue 6801
 
-1. [可视化小鼠脓毒症期间肺部中性粒细胞-血小板免疫血栓形成级联反应](https://doi.org/10.1126/science.adv0377)
-2. [赤铁矿是火星古代气候变化的矿物学标志](https://doi.org/10.1126/science.adv5447)
-3. [通过银纳米晶体的形状控制稳定超晶格的过渡相](https://doi.org/10.1126/science.ady6472)
+1. [可视化小鼠脓毒症期间肺部中性粒细胞-血小板免疫血栓级联反应](https://doi.org/10.1126/science.adv0377)
+2. [赤铁矿是火星古代气候变化的矿物学标志物](https://doi.org/10.1126/science.adv5447)
+3. [通过银纳米晶体的形貌控制稳定超晶格的过渡相](https://doi.org/10.1126/science.ady6472)
 4. [东南极洲下方的上地幔地震](https://doi.org/10.1126/science.aea9895)
-5. [强负载铂簇的催化性能与原子数的关系](https://doi.org/10.1126/science.aeb3087)
-6. [将锂硬岩精矿转化为电池原材料和商品](https://doi.org/10.1126/science.aec4652)
+5. [强负载铂簇催化性能对原子数的依赖性](https://doi.org/10.1126/science.aeb3087)
+6. [锂硬岩精矿高值化为电池原材料和大宗商品](https://doi.org/10.1126/science.aec4652)
 7. [停止相揭示大型走滑地震的突然停止](https://doi.org/10.1126/science.aef3733)
 8. [基于机械谐振器的量子计算](https://doi.org/10.1126/science.aef4139)
 9. [选择性自噬微调植物免疫以促进病毒感染期间的细胞存活](https://doi.org/10.1126/science.adu9554)
-10. [阴天条件下信鸽导航依赖超顺磁性巨噬细胞](https://doi.org/10.1126/science.ady2486)
+10. [信鸽导航在阴天条件下依赖超顺磁巨噬细胞](https://doi.org/10.1126/science.ady2486)
 11. [大象对粪甲虫生物多样性和生态系统功能的重要性](https://doi.org/10.1126/science.aeb7062)
-12. [应变弹性本征可拉伸电化学生物界面](https://doi.org/10.1126/science.aed1630)
-13. [短暂射频噪声暴露对迁徙蝙蝠导航的干扰效应](https://doi.org/10.1126/science.adq4418)
-14. [泛癌三级淋巴结构空间图谱](https://doi.org/10.1126/science.adz2742)
-15. [用于快速作用共价蛋白药物的高通量筛选系统](https://doi.org/10.1126/science.adv3081)
-16. [无序转录因子相互作用实现涌现特异性](https://doi.org/10.1126/science.aeb6487)
+12. [抗应变本征可拉伸电化学生物界面](https://doi.org/10.1126/science.aed1630)
+13. [短暂射频噪声暴露对迁徙蝙蝠导航的破坏性影响](https://doi.org/10.1126/science.adq4418)
+14. [三级淋巴结构的泛癌空间图谱](https://doi.org/10.1126/science.adz2742)
+15. [用于速效共价蛋白药物的高通量筛选系统](https://doi.org/10.1126/science.adv3081)
+16. [无结构转录因子相互作用实现涌现特异性](https://doi.org/10.1126/science.aeb6487)
 
-新聞特報：[用于药物测试的离体人脑](https://www.science.org/doi/abs/10.1126/science.aej2007) / [船舶调查捕捉地幔柱的脉动](https://www.science.org/doi/abs/10.1126/science.aej2008) / [JWST是否发现了爆炸的原始恒星？](https://www.science.org/doi/abs/10.1126/science.aej2009) / [埃博拉疫情考验灵活的治疗试验设计](https://www.science.org/doi/abs/10.1126/science.aej2010) / [NIH和NASA对外国合著者设限](https://www.science.org/doi/abs/10.1126/science.aej2011)
+新聞特報：[用于药物测试的离体人脑](https://www.science.org/doi/abs/10.1126/science.aej2007) / [船舶调查捕捉地幔柱的脉动](https://www.science.org/doi/abs/10.1126/science.aej2008) / [詹姆斯·韦伯空间望远镜是否发现了爆炸的原初恒星？](https://www.science.org/doi/abs/10.1126/science.aej2009) / [埃博拉疫情考验灵活的治疗试验设计](https://www.science.org/doi/abs/10.1126/science.aej2010) / [美国国立卫生研究院和美国国家航空航天局限制外国合著者](https://www.science.org/doi/abs/10.1126/science.aej2011)
 
 編輯選文：[In Other Journals](https://doi.org/10.1126/science.aei9225)
 
 ### Nature
 
-1. [编辑部关注声明：通过体内诱导蛋白水解功能性蛋白质组学鉴定DNA复制蛋白](https://doi.org/10.1038/s41586-026-10727-w)
-2. [回复：热带植被总初级生产力的大小](https://doi.org/10.1038/s41586-026-10561-0)
-3. [热带植被总初级生产力的大小](https://doi.org/10.1038/s41586-026-10562-z)
+1. [编辑部关注声明：通过体内诱导蛋白水解对DNA复制蛋白进行功能蛋白质组学鉴定](https://doi.org/10.1038/s41586-026-10727-w)
+2. [回复：热带植被总初级生产力的规模](https://doi.org/10.1038/s41586-026-10561-0)
+3. [热带植被总初级生产力的规模](https://doi.org/10.1038/s41586-026-10562-z)
 4. [一种天然缩肽抗生素结合细菌核糖体的E位点](https://doi.org/10.1038/s41586-026-10589-2)
-5. [地球东西向反照率对称性](https://doi.org/10.1038/s41586-026-10624-2)
-6. [木星弓形激波及以外的相对论电子加速](https://doi.org/10.1038/s41586-026-10473-z)
+5. [地球的东西向反照率对称性](https://doi.org/10.1038/s41586-026-10624-2)
+6. [木星弓激波及以外的相对论电子加速](https://doi.org/10.1038/s41586-026-10473-z)
 7. [IDH突变型胶质瘤进展中的获得性遗传和细胞状态变化](https://doi.org/10.1038/s41586-026-10612-6)
-8. [采矿在撒哈拉以南非洲引发广泛的额外森林砍伐](https://doi.org/10.1038/s41586-026-10551-2)
+8. [采矿引发撒哈拉以南非洲大规模额外森林砍伐](https://doi.org/10.1038/s41586-026-10551-2)
 9. [冷诱导肽信号确保花粉抗逆性和作物产量](https://doi.org/10.1038/s41586-026-10603-7)
 10. [大刍草等位基因增强玉米氮同化和种子蛋白](https://doi.org/10.1038/s41586-026-10575-8)
 11. [细胞类型解析的遗传变异影响炎症性肠病风险](https://doi.org/10.1038/s41586-026-10627-z)
