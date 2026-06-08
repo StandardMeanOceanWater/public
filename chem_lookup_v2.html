@@ -1,0 +1,180 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:1.5rem 0;font-family:var(--font-sans)}
+.search-row{display:flex;gap:8px;margin-bottom:1rem}
+.search-row input{flex:1}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
+.tag{font-size:12px;padding:3px 10px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;cursor:pointer;color:var(--color-text-secondary)}
+.tag:hover{background:var(--color-background-tertiary)}
+.status{font-size:13px;color:var(--color-text-secondary);padding:.5rem 0;line-height:1.8}
+.status.err{color:var(--color-text-danger)}
+.step{display:inline-block;font-size:11px;padding:2px 8px;border-radius:12px;margin-right:4px;margin-bottom:2px}
+.step.done{background:var(--color-background-success);color:var(--color-text-success)}
+.step.running{background:var(--color-background-warning);color:var(--color-text-warning)}
+.step.fail{background:var(--color-background-danger);color:var(--color-text-danger)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:.4rem}
+.mono{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;word-break:break-all;line-height:1.6;color:var(--color-text-primary);margin-top:.4rem}
+.copy-btn{font-size:12px;margin-top:6px;padding:4px 10px}
+.sec{font-size:13px;font-weight:500;color:var(--color-text-secondary);margin:.9rem 0 .3rem}
+#canvas-wrap{display:flex;justify-content:center;align-items:center;min-height:210px}
+.translated-badge{font-size:11px;padding:2px 8px;border-radius:12px;background:var(--color-background-info);color:var(--color-text-info);margin-left:6px;vertical-align:middle}
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">化學結構式查詢工具（支援繁體中文）</h2>
+
+<div class="search-row">
+  <input id="q" type="text" placeholder="繁中、簡中、英文名、分子式，例：阿斯匹靈、苯、aspirin" />
+  <button onclick="run()">查詢 ↗</button>
+</div>
+
+<div class="tag-row">
+  <span style="font-size:12px;color:var(--color-text-secondary)">常用：</span>
+  <span class="tag" onclick="go('苯')">苯</span>
+  <span class="tag" onclick="go('乙醇')">乙醇</span>
+  <span class="tag" onclick="go('阿斯匹靈')">阿斯匹靈</span>
+  <span class="tag" onclick="go('乙醯水楊酸')">乙醯水楊酸</span>
+  <span class="tag" onclick="go('葡萄糖')">葡萄糖</span>
+  <span class="tag" onclick="go('咖啡因')">咖啡因</span>
+  <span class="tag" onclick="go('多巴胺')">多巴胺</span>
+  <span class="tag" onclick="go('膽固醇')">膽固醇</span>
+  <span class="tag" onclick="go('青黴素')">青黴素</span>
+</div>
+
+<div id="status" style="display:none" class="status"></div>
+<div id="results" style="display:none">
+  <div class="grid">
+    <div class="card">
+      <div class="lbl">2D 結構式</div>
+      <div id="canvas-wrap"><canvas id="mc" width="280" height="210"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="lbl">化合物資訊 <span id="xlat-badge" class="translated-badge" style="display:none">經翻譯查到</span></div>
+      <div style="font-size:15px;font-weight:500" id="iupac"></div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-top:3px" id="formula"></div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px" id="mw"></div>
+      <div id="xlat-from" style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;display:none"></div>
+
+      <div class="sec">SMILES</div>
+      <div class="mono" id="smiles"></div>
+      <button class="copy-btn" onclick="cp('smiles')"><i class="ti ti-copy" aria-hidden="true"></i> 複製 SMILES</button>
+
+      <div class="sec">mhchem（方程式 LaTeX）</div>
+      <div class="mono" id="mhchem"></div>
+      <button class="copy-btn" onclick="cp('mhchem')"><i class="ti ti-copy" aria-hidden="true"></i> 複製</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="lbl">取得 chemfig 結構代碼</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-top:4px;line-height:1.7">
+      複製 SMILES → 貼到
+      <a href="https://www.cheminfo.org/Chemistry/2D_3D_Molecules/mol2chemfig/index.html" style="color:var(--color-text-info)">mol2chemfig</a>
+      → 得到 <code>\chemfig{...}</code>，可直接貼進 <code>.tex</code>
+    </div>
+    <div class="mono" style="margin-top:8px">\usepackage{chemfig}<br>\usepackage[version=4]{mhchem}<br><br>% 方程式<br>\ce{<span id="ce-p"></span>}<br><br>% 結構式（mol2chemfig 產生）<br>\chemfig{ ... }</div>
+  </div>
+
+  <div style="margin-top:10px;text-align:right">
+    <a id="pclink" href="#" style="font-size:12px;color:var(--color-text-info)">PubChem 完整資訊 <i class="ti ti-external-link" aria-hidden="true"></i></a>
+  </div>
+</div>
+</div>
+
+<script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+<script>
+let sd=null;
+function go(n){document.getElementById('q').value=n;run();}
+function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
+
+function setStatus(html,isErr){
+  const s=document.getElementById('status');
+  s.style.display='block';
+  s.className='status'+(isErr?' err':'');
+  s.innerHTML=html;
+  document.getElementById('results').style.display='none';
+}
+function step(label,state){return`<span class="step ${state}">${label}</span>`;}
+
+async function pubchemFetch(name){
+  const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(name)}/property/IsomericSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
+  if(!r.ok) return null;
+  const d=await r.json();
+  return d.PropertyTable.Properties[0];
+}
+
+async function translateZhToEn(text){
+  const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-TW|en`);
+  if(!r.ok) return null;
+  const d=await r.json();
+  if(d.responseStatus===200){
+    const t=d.responseData.translatedText;
+    if(t&&t!==text) return t;
+  }
+  return null;
+}
+
+async function run(){
+  const q=document.getElementById('q').value.trim();
+  if(!q) return;
+  document.getElementById('results').style.display='none';
+
+  setStatus(step('直接查詢 PubChem','running')+' 查詢中…');
+
+  let props=null;
+  let usedTranslation=false;
+  let translatedTo='';
+
+  props=await pubchemFetch(q);
+
+  if(!props){
+    setStatus(step('直接查詢 PubChem','fail')+step('翻譯繁中→英文','running')+' 翻譯中…');
+    const en=await translateZhToEn(q);
+    if(en){
+      translatedTo=en;
+      setStatus(step('直接查詢 PubChem','fail')+step('翻譯','done')+`「${en}」`+step('查詢 PubChem','running')+' 再次查詢…');
+      props=await pubchemFetch(en);
+      if(props) usedTranslation=true;
+    }
+    if(!props){
+      setStatus(step('直接查詢','fail')+step('翻譯查詢','fail')+' 查無結果，請試試英文名或 IUPAC 名稱',true);
+      return;
+    }
+  }
+
+  const {CID,IsomericSMILES:smiles,MolecularFormula:formula,MolecularWeight:mw,IUPACName:iupac}=props;
+
+  document.getElementById('iupac').textContent=iupac||'';
+  document.getElementById('formula').textContent='分子式：'+formula;
+  document.getElementById('mw').textContent='分子量：'+parseFloat(mw).toFixed(2)+' g/mol';
+  document.getElementById('smiles').textContent=smiles;
+  document.getElementById('mhchem').textContent='\\ce{'+formula+'}';
+  document.getElementById('ce-p').textContent=formula;
+  document.getElementById('pclink').href='https://pubchem.ncbi.nlm.nih.gov/compound/'+CID;
+
+  const badge=document.getElementById('xlat-badge');
+  const xfrom=document.getElementById('xlat-from');
+  if(usedTranslation){
+    badge.style.display='';
+    xfrom.style.display='';
+    xfrom.textContent='翻譯結果：「'+q+'」→「'+translatedTo+'」';
+  } else {
+    badge.style.display='none';
+    xfrom.style.display='none';
+  }
+
+  document.getElementById('status').style.display='none';
+  document.getElementById('results').style.display='block';
+
+  if(!sd) sd=new SmilesDrawer.Drawer({width:280,height:210,themes:{light:{C:'#1a1a1a',O:'#c0392b',N:'#2980b9',S:'#d4ac0d',P:'#8e44ad',F:'#16a085',Cl:'#27ae60',Br:'#a04000',I:'#6c3483',BACKGROUND:'transparent'}}});
+  SmilesDrawer.parse(smiles,function(tree){
+    sd.draw(tree,'mc','light',false);
+  },function(){
+    document.getElementById('canvas-wrap').innerHTML='<img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG?image_size=small" style="max-width:260px;max-height:200px" alt="結構式"/>';
+  });
+}
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+</script>

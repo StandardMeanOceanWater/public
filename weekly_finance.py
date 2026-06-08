@@ -69,14 +69,42 @@ def calc_pct_change(current, previous):
 
 
 def tg_send(text, photo_path=None):
-    """發送 Telegram 訊息（可選附圖片）"""
+    """發送 Telegram 訊息（先文字，等 5 秒後再送圖）"""
     if not BOT_TOKEN:
         print("⚠️ BOT_TOKEN 未設定，跳過發送")
         return
 
-    # 如果有圖片，用 sendPhoto
+    # 先送文字
+    chunks = []
+    while len(text) > 4000:
+        cut = text[:4000].rfind("\n")
+        if cut < 2000:
+            cut = 4000
+        chunks.append(text[:cut])
+        text = text[cut:]
+    chunks.append(text)
+
+    for chunk in chunks:
+        data = json.dumps({
+            "chat_id": CHAT_ID,
+            "text": chunk,
+            "parse_mode": "HTML",
+            "link_preview_options": {"is_disabled": True},
+        }).encode()
+        req = urllib.request.Request(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+            data=data,
+            headers={"Content-Type": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(req, timeout=15)
+        except Exception as e:
+            print(f"⚠️ Telegram 發送失敗: {e}")
+
+    # 等 5 秒再送圖
     if photo_path and os.path.exists(photo_path):
-        # 先送圖片
+        import time
+        time.sleep(5)
         boundary = "----WebKitFormBoundary"
         with open(photo_path, "rb") as f:
             img_data = f.read()
@@ -104,33 +132,6 @@ def tg_send(text, photo_path=None):
             print("✅ 圖片發送成功")
         except Exception as e:
             print(f"⚠️ 圖片發送失敗: {e}")
-
-    # 送文字
-    chunks = []
-    while len(text) > 4000:
-        cut = text[:4000].rfind("\n")
-        if cut < 2000:
-            cut = 4000
-        chunks.append(text[:cut])
-        text = text[cut:]
-    chunks.append(text)
-
-    for chunk in chunks:
-        data = json.dumps({
-            "chat_id": CHAT_ID,
-            "text": chunk,
-            "parse_mode": "HTML",
-            "link_preview_options": {"is_disabled": True},
-        }).encode()
-        req = urllib.request.Request(
-            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-            data=data,
-            headers={"Content-Type": "application/json"},
-        )
-        try:
-            urllib.request.urlopen(req, timeout=15)
-        except Exception as e:
-            print(f"⚠️ Telegram 發送失敗: {e}")
 
 
 # ===== 歷史數據 =====
