@@ -629,12 +629,23 @@ def generate_sunday_report():
 
     # 💱 匯率
     lines.append("💱 <b>台灣銀行匯率（即期）</b>")
+    history = load_history()
+    prev_row = history[-2] if len(history) >= 2 else None
     for cur, label in [("USD", "USD"), ("CNY", "CNY"), ("JPY", "1/JPY")]:
         if cur in fx:
             val = fx[cur]["spot_sell"]
             if cur == "JPY" and val > 0:
                 val = 1 / val
-            lines.append(f"  {label} {fmt_num(val, 2)}")
+                prev_val = float(prev_row.get("jpy_spot_buy", 0)) if prev_row else 0
+                if prev_val > 0:
+                    pct = calc_pct_change(val, 1 / prev_val)
+                else:
+                    pct = None
+            else:
+                prev_val = float(prev_row.get(f"fx_{cur}", prev_row.get({"USD":"usd_spot_sell","CNY":"cny_spot_sell"}.get(cur,""), 0))) if prev_row else 0
+                pct = calc_pct_change(val, prev_val) if prev_val else None
+            sym, pct_str = fmt_change(pct)
+            lines.append(f"  {label} {fmt_num(val, 2)} {sym}{pct_str}")
     lines.append("")
 
     # 🌍 國際行情
@@ -648,18 +659,20 @@ def generate_sunday_report():
         else:
             lines.append(f"  {icon} {label} 取得失敗")
 
-    lines.append("")
-
-    # 原油 + 比特幣
-    if wti_data:
-        lines.append(f"  🛢️ 原油WTI {fmt_num(wti_data['price'], 2)}")
-    if brent_data:
-        lines.append(f"  🛢️ 原油Brent {fmt_num(brent_data['price'], 2)}")
-    if btc:
-        lines.append(f"  ₿ 比特幣 {fmt_num(btc['twd'])} TWD")
-    lines.append("")
-
-    lines.append("")
+    # 原油 + 比特幣（含日變化）
+    for item, label, icon, price, key in [
+        (wti_data, "原油WTI", "🛢️", wti_data["price"] if wti_data else None, "wti_usd"),
+        (brent_data, "原油Brent", "🛢️", brent_data["price"] if brent_data else None, "brent_usd"),
+        (btc, "比特幣", "₿", btc["twd"] if btc else None, "btc_twd"),
+    ]:
+        if item:
+            prev_v = float(prev_row.get(key, 0)) if prev_row else 0
+            pct = calc_pct_change(price, prev_v) if prev_v else None
+            sym, pct_str = fmt_change(pct)
+            if label == "比特幣":
+                lines.append(f"  {icon} {label} {fmt_num(price, 2)} {sym}{pct_str}")
+            else:
+                lines.append(f"  {icon} {label} {fmt_num(price, 2)} {sym}{pct_str}")
 
     # 📈 重要數值週變化
     lines.append("📈 <b>重要數值週變化</b>")
