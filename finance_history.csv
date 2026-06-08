@@ -1,0 +1,3 @@
+date,usd_spot_sell,cny_spot_sell,jpy_spot_buy,gold_usd,silver_usd,platinum_usd,wti_usd,brent_usd,btc_usd,twii,tsmc,tx_settlement
+2026-06-08,31.655,4.685,0.1947,4286.195,66.919,1758.775,95.96,98.29,63044.01,45070.94,2365.0,45226.0
+2026-06-08,31.655,4.685,0.1947,,,,95.96,98.29,63008.63,45070.94,2365.0,45226.0
