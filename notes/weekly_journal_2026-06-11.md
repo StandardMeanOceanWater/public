@@ -1,0 +1,71 @@
+# 本週科學期刊 — 2026-06-11
+
+### SCIENCE | Volume 392, Issue 6802
+
+1. [Competition enables rapid adaptation to a warming range edge in a model plant community](https://doi.org/10.1126/science.ads4664)
+2. [Severe obesity in human HFpEF alters contractile protein function and organization](https://doi.org/10.1126/science.adz7118)
+3. [Global extent and drivers of tree cover loss quantified with high-resolution satellite data](https://doi.org/10.1126/science.adz9042)
+4. [Home alone: Remote work, isolation, and mental health](https://doi.org/10.1126/science.aec7671)
+5. [Homo cooperans: Understanding the nature of human cooperation](https://doi.org/10.1126/science.aec9483)
+6. [Fires reverse progress toward ozone air quality standards in the United States](https://doi.org/10.1126/science.aed3197)
+7. [Photocatalyzed oxidative cleavage of alkenes using CO2 as an oxygen donor](https://doi.org/10.1126/science.aed6068)
+8. [Memory reactivation underlies experience-dependent adaptive regulation of sleep](https://doi.org/10.1126/science.aed8630)
+9. [Confined growth of armchair MoS2 nanotubes at the 1-nm limit](https://doi.org/10.1126/science.aee3446)
+10. [Stereoretentive radical-based alkyl-alkyl cross-coupling](https://doi.org/10.1126/science.aef6981)
+11. [Ultralow chromium doping enables all-PbSe thermoelectric cooling](https://doi.org/10.1126/science.aeg8963)
+12. [Unexpected expansion and regrowth in Earth’s mangrove forests over the past four decades](https://doi.org/10.1126/science.aec9773)
+13. [A stellar dynamical mass measurement of an inactive black hole at redshift 2](https://doi.org/10.1126/science.adx5816)
+14. [Molecular mimicry of a pathogen virulence target by a plant immune receptor](https://doi.org/10.1126/science.aef9946)
+15. [Landscape efficiency frontiers for biodiversity, climate mitigation, and net economic value](https://doi.org/10.1126/science.aea9058)
+16. [Spontaneous problem-solving in bumble bees](https://doi.org/10.1126/science.ady1618)
+
+新聞特報：[Proposed orbital ‘airbag’ would block solar storms](https://www.science.org/doi/abs/10.1126/science.aej3858) / [Trump seeks tighter grip on grantmaking](https://www.science.org/doi/abs/10.1126/science.aej3861) / [String theory is rebuilt from first principles](https://www.science.org/doi/abs/10.1126/science.aej3863) / [White House defangs NSF watchdog unit](https://www.science.org/doi/abs/10.1126/science.aej3864) / [Antiviral pill gets first test for Ebola prevention](https://www.science.org/doi/abs/10.1126/science.aej3865) / [Threatened ‘rolling stone reefs’ are surprisingly diverse](https://www.science.org/doi/abs/10.1126/science.aej3866) / [Brain-mapping effort searches for roots of neurodegenerative diseases](https://www.science.org/doi/abs/10.1126/science.aej3862)
+
+編輯選文：[In Other Journals](https://doi.org/10.1126/science.aej3527)
+
+### NATURE | Vol. 654, Issue 8118
+
+1. [Building user-driven climate adaptation products](https://doi.org/10.1038/s41586-026-10555-y)
+2. [Improved quantum processor logical error rates via correction and detection](https://doi.org/10.1038/s41586-026-10628-y)
+3. [Cavity-driven attractive interactions in quantum materials](https://doi.org/10.1038/s41586-026-10609-1)
+4. [Chiral superfluorescence from perovskite superlattices at room temperature](https://doi.org/10.1038/s41586-026-10637-x)
+5. [In situ nanocrystal confinement for efficient blue perovskite LEDs](https://doi.org/10.1038/s41586-026-10596-3)
+6. [Analysis of trade-offs of post-sorting plastic packaging](https://doi.org/10.1038/s41586-026-10606-4)
+7. [Temporary carbon dioxide removal to offset short-lived climate forcers](https://doi.org/10.1038/s41586-026-10607-3)
+8. [Decade-long warming accelerates antibiotic resistance in grassland soils](https://doi.org/10.1038/s41586-026-10413-x)
+9. [Ancient DNA reveals pervasive directional selection across West Eurasia](https://doi.org/10.1038/s41586-026-10358-1)
+10. [Dynamics of genetic and somatic trade-offs in ageing and mortality](https://doi.org/10.1038/s41586-026-10407-9)
+11. [Shared neural substrates of prosocial and parenting behaviours](https://doi.org/10.1038/s41586-026-10327-8)
+12. [Dopamine drives persistent remodelling of the maternal brain](https://doi.org/10.1038/s41586-026-10509-4)
+13. [Aversive learning hijacks a brain sugar sensor to consolidate memory](https://doi.org/10.1038/s41586-026-10306-z)
+14. [Submicrometre sampling of living cells by macrophages](https://doi.org/10.1038/s41586-026-10435-5)
+15. [A pro-carcinogenic bacterial toxin binds claudin-4 to cleave E-cadherin](https://doi.org/10.1038/s41586-026-10375-0)
+16. [Pervasive and programmed nucleosome distortion on single chromatin fibres](https://doi.org/10.1038/s41586-026-10418-6)
+17. [Structural basis of fungal β-1,3-glucan synthase inhibition by caspofungin](https://doi.org/10.1038/s41586-026-10409-7)
+
+### NATURE | CrossRef this week (PDF Maybe)
+
+*2026-06-04 to 2026-06-12*
+
+1. [A thalamus–brainstem attractor network drives history-biased decisions](https://doi.org/10.1038/s41586-026-10623-3)
+2. [Deep learning four decades of human migration](https://doi.org/10.1038/s41586-026-10611-7)
+3. [Gene ancestries reveal diverse microbial associations during eukaryogenesis](https://doi.org/10.1038/s41586-026-10639-9)
+4. [Mitochondria directly interact with the nuclear pore complex](https://doi.org/10.1038/s41586-026-10588-3)
+5. [Diverse binding poses of agonistic neurotoxins on human Nav1.6](https://doi.org/10.1038/s41586-026-10661-x)
+6. [A 5.3-million-year-old deep-sea whale necropolis in the Diamantina Zone](https://doi.org/10.1038/s41586-026-10546-z)
+7. [Efficient and accurate neural-field reconstruction using resistive memory](https://doi.org/10.1038/s41586-026-10646-w)
+8. [Two-component exciton condensates in an electron–hole bilayer](https://doi.org/10.1038/s41586-026-10636-y)
+9. [A first-in-class pulsatile FXR agonist for bile-acid-related liver diseases](https://doi.org/10.1038/s41586-026-10633-1)
+10. [Mutation-dependent responses to sleep and exercise in clonal haematopoiesis](https://doi.org/10.1038/s41586-026-10634-0)
+11. [Structural basis for chaperone-guided assembly of RNA-induced silencing complex](https://doi.org/10.1038/s41586-026-10640-2)
+12. [Lignin to adipic acid in a high-yield chemical and biological redox process](https://doi.org/10.1038/s41586-026-10580-x)
+13. [Light-induced quantum friction of carbon nanotubes in water](https://doi.org/10.1038/s41586-026-10632-2)
+14. [Molecular glue degraders of HuR suppress BRAF-mutant colorectal cancer](https://doi.org/10.1038/s41586-026-10613-5)
+15. [SIRT7 regulates dosage compensation and safeguards the female X chromosome](https://doi.org/10.1038/s41586-026-10645-x)
+16. [A prognostic human brain network for diffuse midline glioma](https://doi.org/10.1038/s41586-026-10631-3)
+17. [Whole-genome duplication shaped cell-type evolution in the vertebrate brain](https://doi.org/10.1038/s41586-026-10629-x)
+18. [Amplified Arctic iceberg traffic reshapes benthic biodiversity](https://doi.org/10.1038/s41586-026-10630-4)
+19. [A unicellular relative links aggregative multicellularity to animal origins](https://doi.org/10.1038/s41586-026-10748-5)
+20. [Distributed control circuits across a brain-and-cord connectome](https://doi.org/10.1038/s41586-026-10735-w)
+21. [GPR15-guided CD8+ T regulatory cells control intestinal inflammation](https://doi.org/10.1038/s41586-026-10749-4)
+22. [Targeting Cancer-Specific Mutations with RNA-Triggered Chromatin Shredding](https://doi.org/10.1038/s41586-026-10738-7)
