@@ -1,7 +1,0 @@
-__pycache__/
-*.pyc
-config.json
-finance_history.csv
-.env
-*.html
-*.pyc
