@@ -1,0 +1,53 @@
+# 本週科學期刊 — 2026-06-18
+
+### SCIENCE | Volume 392, Issue 6803
+
+1. [Long-term isolation and archaic introgression shape functional genetic variation in Near Oceania](https://doi.org/10.1126/science.adr6749)
+2. [An all-optical signal processor enabling terabit-per-second real-time equalization](https://doi.org/10.1126/science.ady5344)
+3. [Assessing the net climate benefits of improved grazing intensity in global rangelands](https://doi.org/10.1126/science.adz4320)
+4. [The air pollution benefits of low-severity fire](https://doi.org/10.1126/science.aea2490)
+5. [Mechanoelectrical metamaterials for broad-range, high-sensitivity pressure sensing](https://doi.org/10.1126/science.aeb3456)
+6. [Unveiling the complexity of post-Roman polity formation in Pannonia using ancient DNA](https://doi.org/10.1126/science.aec2634)
+7. [Organic spontaneous emission approaching the monochromatic limit](https://doi.org/10.1126/science.aee0001)
+8. [Patterns of brain-wide associations reflect socioeconomics](https://doi.org/10.1126/science.aee6213)
+9. [Compound climate events threaten tropical semi-enclosed marine ecosystems](https://doi.org/10.1126/science.adv0367)
+10. [Divergent evolution of nitrogen cycling along gradients of landscape water velocities](https://doi.org/10.1126/science.aed0399)
+11. [A global map for introgressed structural variation and selection in humans](https://doi.org/10.1126/science.adz7518)
+12. [Super-earths and mini-neptunes follow different orbital period–eccentricity relations](https://doi.org/10.1126/science.adu3916)
+13. [Global density and biomass of arbuscular mycorrhizal fungal networks](https://doi.org/10.1126/science.adu4373)
+14. [A 481-meter-high landslide-tsunami in a cruise ship–frequented Alaska fjord](https://doi.org/10.1126/science.aec3187)
+15. [Placental nicotinamide adenine dinucleotide modulates the timing of labor](https://doi.org/10.1126/science.adz1624)
+16. [Fast cell wall softening causes Venus flytrap closure](https://doi.org/10.1126/science.aed5051)
+
+新聞特報：[Science sleuth finds rare acclaim in China](https://www.science.org/doi/abs/10.1126/science.aej5918) / [Protein name confusion led to antibody mix-up](https://www.science.org/doi/abs/10.1126/science.aej5919) / [U.S. agencies join fight against ‘ultraprocessed foods’](https://www.science.org/doi/abs/10.1126/science.aej5920) / [Laser-boosted microscopy opens view of elusive proteins](https://www.science.org/doi/abs/10.1126/science.aej5921) / [An embryo editing ‘first’ is more complicated than headlines suggest](https://www.science.org/doi/abs/10.1126/science.aej5922) / [NIH scientists charged with smuggling viruses into U.S.](https://www.science.org/doi/abs/10.1126/science.aej5923) / [Satellite maps of sinking coastlines face scrutiny](https://www.science.org/doi/abs/10.1126/science.aej5924)
+
+編輯選文：[In Other Journals](https://doi.org/10.1126/science.aej5478)
+
+### NATURE | Vol. 654, Issue 8119
+
+1. [Emergent decadal predictability in Antarctic contribution to sea-level rise](https://doi.org/10.1038/s41586-026-10614-4)
+2. [A distant brown dwarf coplanar to a warm Jupiter and a hot super-Earth](https://doi.org/10.1038/s41586-026-10586-5)
+3. [Nuclear shell structure governs short-range nucleon pairing](https://doi.org/10.1038/s41586-026-10616-2)
+4. [A prototype differential atom interferometer for fundamental physics](https://doi.org/10.1038/s41586-026-10617-1)
+5. [Two-component exciton condensates in an electron–hole bilayer](https://doi.org/10.1038/s41586-026-10636-y)
+6. [Probing picometre-scale interlayer deformations via hyperbolic polaritons](https://doi.org/10.1038/s41586-026-10638-w)
+7. [Efficient and accurate neural-field reconstruction using resistive memory](https://doi.org/10.1038/s41586-026-10646-w)
+8. [Monolithic three-dimensional integration of silicon transistors](https://doi.org/10.1038/s41586-026-10496-6)
+9. [Stereoelectronic manipulation of ligands for perovskite solar cells](https://doi.org/10.1038/s41586-026-10626-0)
+10. [Lignin to adipic acid in a high-yield chemical and biological redox process](https://doi.org/10.1038/s41586-026-10580-x)
+11. [Earth’s east–west albedo symmetry](https://doi.org/10.1038/s41586-026-10624-2)
+12. [Pollinators support the nutrition and income of vulnerable communities](https://doi.org/10.1038/s41586-026-10421-x)
+13. [Queen cell architecture shapes honey bee queen development](https://doi.org/10.1038/s41586-026-10534-3)
+14. [Lethal plague outbreaks in Lake Baikal hunter-gatherers 5,500 years ago](https://doi.org/10.1038/s41586-026-10540-5)
+15. [Chromosomal fusions trigger rediploidization of autopolyploid genomes](https://doi.org/10.1038/s41586-026-10439-1)
+16. [Plasticity and language in the anaesthetized human hippocampus](https://doi.org/10.1038/s41586-026-10448-0)
+17. [Flexible ensheathment of axons enables myelination of complex CNS networks](https://doi.org/10.1038/s41586-026-10312-1)
+18. [Developmental organization of sensory and sympathetic ganglia](https://doi.org/10.1038/s41586-026-10313-0)
+19. [Active dissociation of intracortical spiking and high gamma activity](https://doi.org/10.1038/s41586-026-10331-y)
+20. [Spatiotemporal transcriptome atlas of human embryos after gastrulation](https://doi.org/10.1038/s41586-026-10545-0)
+21. [Steric hindrance of antibody binding in an Omicron spike fusion intermediate](https://doi.org/10.1038/s41586-026-10462-2)
+22. [Vaccination generates broadly cross-neutralizing antibodies to the HIV Env apex](https://doi.org/10.1038/s41586-026-10429-3)
+23. [Mitochondria directly interact with the nuclear pore complex](https://doi.org/10.1038/s41586-026-10588-3)
+24. [Netrin1 blockade alleviates resistance to chemotherapy in pancreatic cancer](https://doi.org/10.1038/s41586-026-10436-4)
+25. [Prime assembly with linear DNA donors enables large genomic insertions](https://doi.org/10.1038/s41586-026-10460-4)
+26. [Expanding the human proteome with microproteins and peptideins](https://doi.org/10.1038/s41586-026-10459-x)
