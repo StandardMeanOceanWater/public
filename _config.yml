@@ -9,9 +9,8 @@ baseurl: "/public"
 # ============================================
 # 主題：官方 hacker（唯一預設黑底主題）
 # ============================================
-remote_theme: pages-themes/hacker@v0.2.0
+theme: jekyll-theme-hacker
 plugins:
-  - jekyll-remote-theme
   - jekyll-seo-tag
 
 # ============================================
