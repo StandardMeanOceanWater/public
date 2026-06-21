@@ -4,3 +4,5 @@ theme: minima
 plugins:
   - jekyll-relative-links
 permalink: pretty
+include:
+  - journal/
