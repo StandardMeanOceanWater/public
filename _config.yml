@@ -4,5 +4,8 @@ theme: minima
 plugins:
   - jekyll-relative-links
 permalink: pretty
+exclude:
+  - "*.md"
+  - "**/*.md"
 include:
   - journal/
