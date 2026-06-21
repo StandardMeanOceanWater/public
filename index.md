@@ -3,7 +3,8 @@ layout: default
 ---
 ---
 
-# 變星測光程式筆記(notes\)
+# 變星測光程式
+- [筆記](\notes\index.html)
 
 ---
 
