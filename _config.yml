@@ -5,7 +5,6 @@ plugins:
   - jekyll-relative-links
 permalink: pretty
 exclude:
-  - "*.md"
-  - "**/*.md"
+  - notes/
 include:
   - journal/
