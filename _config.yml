@@ -1,0 +1,9 @@
+theme: jekyll-theme-hacker
+
+exclude:
+  - notes/
+  - .github/
+
+include:
+  - journal/
+  - index.md
