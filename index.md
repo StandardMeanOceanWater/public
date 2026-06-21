@@ -4,7 +4,7 @@ layout: default
 ---
 
 # 變星測光程式
-- [筆記](https://standardmeanoceanwater.github.io/notes/)
+- [筆記](https://standardmeanoceanwater.github.io/public/notes/)
 
 ---
 
