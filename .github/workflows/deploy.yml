@@ -31,6 +31,27 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
+      - name: Auto-add front matter to .md files missing it
+        run: |
+          find . -name "*.md" \
+            -not -path "./.git/*" \
+            -not -path "./vendor/*" \
+            -not -path "./_site/*" | while read -r file; do
+            first_line=$(head -n 1 "$file")
+            if [ "$first_line" != "---" ]; then
+              echo "補 front matter: $file"
+              tmpfile=$(mktemp)
+              {
+                echo "---"
+                echo "layout: default"
+                echo "---"
+                echo ""
+                cat "$file"
+              } > "$tmpfile"
+              mv "$tmpfile" "$file"
+            fi
+          done
+
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
