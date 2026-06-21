@@ -1,6 +1,6 @@
 ---
+layout: default
 title: 變星科展記事
-
 ---
 
 # 變星觀測筆記
