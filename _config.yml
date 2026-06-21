@@ -16,30 +16,6 @@ plugins:
   - jekyll-seo-tag
 
 # ============================================
-# Collections：note 和 journal
-# ============================================
-collections:
-  note:
-    output: true
-    permalink: /note/:path/
-  journal:
-    output: true
-    permalink: /journal/:path/
-
-# 讓 collection 的文章預設套用對應 layout
-defaults:
-  - scope:
-      path: ""
-      type: "note"
-    values:
-      layout: "post"
-  - scope:
-      path: ""
-      type: "journal"
-    values:
-      layout: "post"
-
-# ============================================
 # 建置效能設定
 # ============================================
 # 本地預覽用 --incremental 才會生效，指令見下方說明
