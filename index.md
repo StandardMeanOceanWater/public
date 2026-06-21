@@ -30,6 +30,11 @@ title: 變星科展記事
 - [V1162 Ori 現況整理](./V1162 Ori 現況整理.md)
 - [TEMP（實驗資料）](https://drive.google.com/file/d/1SIdMmypa3C7gzBMzWyRzuDKzBzkymth-/view)
 
+
+## 科學期刊報
+
+- [期刊報首頁](./journal/index.md)
+
 ## 科展準備
 - [變星科展文獻回顧](./變星科展文獻回顧.md)
 - [專業軟體學理比較](./專業軟體學理比較.md)
