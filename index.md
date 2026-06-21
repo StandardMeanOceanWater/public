@@ -1,9 +1,13 @@
 ---
 layout: default
 ---
+---
+
+# 變星測光程式筆記(notes\)
+
+---
 
 # 科學期刊報
-
 Science & Nature 當期研究文章週報
 
 ---
