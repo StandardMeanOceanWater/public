@@ -1,0 +1,6 @@
+title: 科學期刊報
+description: Science & Nature 當期研究文章週報
+theme: minima
+plugins:
+  - jekyll-relative-links
+permalink: pretty
