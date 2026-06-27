@@ -20,6 +20,15 @@
 .copy-btn{font-size:12px;margin-top:6px;padding:4px 10px}
 .sec{font-size:15px;font-weight:600;color:#000080;margin:.9rem 0 .3rem}
 #canvas-wrap{display:flex;justify-content:flex-start;align-items:center;min-height:210px}
+#canvas-wrap canvas{max-width:100%;height:auto}
+@media(max-width:640px){
+  .wrap{padding:1.5rem 1rem 1rem}
+  h2{font-size:1.1rem!important}
+  .sec{font-size:14px}
+  .mono{font-size:13px}
+  .tag{font-size:11px;padding:2px 8px}
+  .search-row input{font-size:16px}
+}
 </style>
 
 <div class="wrap">
@@ -49,7 +58,7 @@
 <div id="results" style="display:none">
   <div class="card">
     <div class="lbl">2D 結構式</div>
-    <div id="canvas-wrap"><canvas id="mc" width="280" height="210"></canvas></div>
+    <div id="canvas-wrap"><canvas id="mc" width="400" height="300"></canvas></div>
     <a id="pc3d" href="#" style="font-size:12px;color:var(--color-text-info);display:inline-block;margin-top:8px">🔬 PubChem 3D 結構 (上下文即有完整分子資訊) <i class="ti ti-external-link" aria-hidden="true"></i></a>
   </div>
   <div class="card">
@@ -333,11 +342,11 @@ async function run(){
   document.getElementById('status').style.display='none';
   document.getElementById('results').style.display='block';
 
-  if(!sd) sd=new SmilesDrawer.Drawer({width:280,height:210,themes:{light:{C:'#1a1a1a',O:'#c0392b',N:'#2980b9',S:'#d4ac0d',P:'#8e44ad',F:'#16a085',Cl:'#27ae60',Br:'#a04000',I:'#6c3483',BACKGROUND:'transparent'}}});
+  if(!sd) sd=new SmilesDrawer.Drawer({width:400,height:300,themes:{light:{C:'#1a1a1a',O:'#c0392b',N:'#2980b9',S:'#d4ac0d',P:'#8e44ad',F:'#16a085',Cl:'#27ae60',Br:'#a04000',I:'#6c3483',BACKGROUND:'transparent'}}});
   SmilesDrawer.parse(smiles,function(tree){
     sd.draw(tree,'mc','light',false);
   },function(){
-    document.getElementById('canvas-wrap').innerHTML='<img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG?image_size=small" style="max-width:260px;max-height:200px" alt="結構式"/>';
+    document.getElementById('canvas-wrap').innerHTML='<img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG?image_size=large" style="max-width:100%;max-height:300px" alt="結構式"/>';
   });
 
   // 從 PubChem 2D API 生成 chemfig（完全繞過 SmilesDrawer 內部 API）
