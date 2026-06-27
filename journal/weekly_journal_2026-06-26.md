@@ -20,9 +20,9 @@
 16. [工業規模奈米晶Ni–Mo–MgO催化劑用於廢物制燃料的混合重整](https://doi.org/10.1126/science.adp5208)
 17. [透過管狀鞭毛的冷凍電鏡高解析度分析揭示結構性N-和O-聚醣](https://doi.org/10.1126/science.aef4958)
 
-新聞特報：[An ancient mystery: missing males](https://www.science.org/doi/abs/10.1126/science.aej9809) / [Rise in papers using powerful medical research tool raises concern](https://www.science.org/doi/abs/10.1126/science.aej9810) / [Has NSF slashed research to support tech initiative?](https://www.science.org/doi/abs/10.1126/science.aej9811) / [Researchers caught in the crossfire as firms and U.S. government grapple over AI safety](https://www.science.org/doi/abs/10.1126/science.aej9813) / [Scientists to spend 8 months drifting in Arctic ice](https://www.science.org/doi/abs/10.1126/science.aej9812)
+新聞特報：[古老謎團：消失的雄性](https://www.science.org/doi/abs/10.1126/science.aej9809) / [使用強大醫學研究工具的論文激增引發擔憂](https://www.science.org/doi/abs/10.1126/science.aej9810) / [NSF是否削減研究經費來支持科技計畫？](https://www.science.org/doi/abs/10.1126/science.aej9811) / [企業與美國政府在AI安全問題上的交火中，研究人員進退兩難](https://www.science.org/doi/abs/10.1126/science.aej9813) / [科學家將在北極冰層中漂流八個月](https://www.science.org/doi/abs/10.1126/science.aej9812)
 
-編輯選文：[In Other Journals](https://doi.org/10.1126/science.aej9373)
+編輯選文：[其他期刊選文](https://doi.org/10.1126/science.aej9373)
 
 ### NATURE | Vol. 654, Issue 8120
 
