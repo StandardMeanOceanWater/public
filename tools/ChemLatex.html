@@ -1,0 +1,349 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:2.5rem 2rem 1.5rem;font-family:var(--font-sans)}
+.search-row{display:flex;gap:8px;margin-bottom:1rem}
+.search-row input{flex:1}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
+.tag{font-size:12px;padding:3px 10px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;cursor:pointer;color:var(--color-text-secondary)}
+.tag:hover{background:var(--color-background-tertiary)}
+.status{font-size:13px;color:var(--color-text-secondary);padding:.5rem 0;line-height:1.8}
+.status.err{color:var(--color-text-danger)}
+.step{display:inline-block;font-size:11px;padding:2px 8px;border-radius:12px;margin-right:4px;margin-bottom:2px}
+.step.done{background:var(--color-background-success);color:var(--color-text-success)}
+.step.running{background:var(--color-background-warning);color:var(--color-text-warning)}
+.step.fail{background:var(--color-background-danger);color:var(--color-text-danger)}
+.translated-badge{font-size:11px;padding:2px 8px;border-radius:12px;background:var(--color-background-info);color:var(--color-text-info);margin-left:6px;vertical-align:middle}
+.card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
+.lbl{font-size:12px;color:var(--color-text-secondary);margin-bottom:.4rem}
+.mono{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;word-break:break-all;line-height:1.6;color:var(--color-text-primary);margin-top:.4rem}
+.copy-btn{font-size:12px;margin-top:6px;padding:4px 10px}
+.sec{font-size:15px;font-weight:600;color:#000080;margin:.9rem 0 .3rem}
+#canvas-wrap{display:flex;justify-content:flex-start;align-items:center;min-height:210px}
+</style>
+
+<div class="wrap">
+<h2 style="font-size:1.25rem;font-weight:700;margin-bottom:0;color:var(--color-text-primary)">繁體中文查化學結構式</h2>
+<div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem">LATEX輸入協助工具 BY JIN&amp;HERMES</div>
+
+<div class="search-row">
+  <input id="q" type="text" placeholder="繁中、簡中、英文名、分子式，例：阿斯匹靈、苯、aspirin" />
+  <button onclick="run()">查詢 ↗</button>
+</div>
+
+<div class="tag-row">
+  <span style="font-size:12px;color:var(--color-text-secondary)">常用：</span>
+  <span class="tag" onclick="go('苯')">苯</span>
+  <span class="tag" onclick="go('乙醇')">乙醇</span>
+  <span class="tag" onclick="go('蔗糖')">蔗糖</span>
+  <span class="tag" onclick="go('阿斯匹靈')">阿斯匹靈</span>
+  <span class="tag" onclick="go('乙醯水楊酸')">乙醯水楊酸</span>
+  <span class="tag" onclick="go('葡萄糖')">葡萄糖</span>
+  <span class="tag" onclick="go('咖啡因')">咖啡因</span>
+  <span class="tag" onclick="go('多巴胺')">多巴胺</span>
+  <span class="tag" onclick="go('膽固醇')">膽固醇</span>
+  <span class="tag" onclick="go('青黴素')">青黴素</span>
+</div>
+
+<div id="status" style="display:none" class="status"></div>
+<div id="results" style="display:none">
+  <div class="card">
+    <div class="lbl">2D 結構式</div>
+    <div id="canvas-wrap"><canvas id="mc" width="280" height="210"></canvas></div>
+    <a id="pc3d" href="#" style="font-size:12px;color:var(--color-text-info);display:inline-block;margin-top:8px">🔬 PubChem 3D 結構 (上下文即有完整分子資訊) <i class="ti ti-external-link" aria-hidden="true"></i></a>
+  </div>
+  <div class="card">
+    <div class="sec">化合物資訊 <span id="xlat-badge" class="translated-badge" style="display:none">經翻譯查到</span></div>
+      <div style="font-size:15px;font-weight:500" id="iupac"></div>
+      <div style="font-size:13px;color:var(--color-text-secondary);margin-top:3px" id="formula"></div>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px" id="mw"></div>
+      <div id="xlat-from" style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;display:none"></div>
+
+      <div class="sec">SMILES</div>
+      <div class="mono" id="smiles"></div>
+      <button class="copy-btn" onclick="cp('smiles')"><i class="ti ti-copy" aria-hidden="true"></i> 複製 SMILES</button>
+
+      <div class="sec">mhchem（方程式 LaTeX）</div>
+      <div class="mono" id="mhchem"></div>
+      <button class="copy-btn" onclick="cp('mhchem')"><i class="ti ti-copy" aria-hidden="true"></i> 複製 mhchem</button>
+
+    <div class="sec" style="margin-top:.9rem">chemfig 結構式</div>
+    <div class="mono" id="chemfig-auto"></div>
+    <button class="copy-btn" onclick="cp('chemfig-auto')"><i class="ti ti-copy" aria-hidden="true"></i> 複製 chemfig</button>
+
+    <div class="sec" style="margin-top:.9rem">LaTeX 化學式 preamble 範例</div>
+    <div class="mono" style="margin-top:8px" id="preamble-block">\usepackage{chemfig}<br>\usepackage[version=4]{mhchem}<br><br>% 方程式<br>\ce{<span id="ce-p"></span>}<br><br>% 結構式<br><span id="chemfig-inline">\chemfig{ ... }</span></div>
+    <button class="copy-btn" onclick="cp('preamble-block')"><i class="ti ti-copy" aria-hidden="true"></i> 複製完整 preamble</button>
+  </div>
+</div>
+</div>
+
+<script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+<script>
+let sd=null;
+function go(n){document.getElementById('q').value=n;run();}
+function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
+
+function setStatus(html,isErr){
+  const s=document.getElementById('status');
+  s.style.display='block';
+  s.className='status'+(isErr?' err':'');
+  s.innerHTML=html;
+  document.getElementById('results').style.display='none';
+}
+function step(label,state){return`<span class="step ${state}">${label}</span>`;}
+
+function treeToChemfig(tree){
+  const V=tree.vertices, E=tree.edges;
+  if(!V.length) return '';
+
+  // 找出 ring-closing edges（不在 spanning tree 裡的邊）
+  const ringMap={}; let ri=0;
+  for(const e of E){
+    const sv=V[e.sourceId], tv=V[e.targetId];
+    const isTree=sv.parentVertexId===tv.id||tv.parentVertexId===sv.id||
+                 sv.spanningTreeChildren.includes(tv.id)||tv.spanningTreeChildren.includes(sv.id);
+    if(!isTree){
+      const k=Math.min(e.sourceId,e.targetId)+'_'+Math.max(e.sourceId,e.targetId);
+      if(!ringMap[k]){ ringMap[k]={e:e, label:'r'+(++ri)}; }
+    }
+  }
+
+  // 每個 vertex 上有哪些 ring label
+  const vRings={};
+  for(const[k,info] of Object.entries(ringMap)){
+    const s=info.e.sourceId, t=info.e.targetId;
+    if(!vRings[s]) vRings[s]=[]; vRings[s].push({target:t,label:info.label,edge:info.e});
+    if(!vRings[t]) vRings[t]=[]; vRings[t].push({target:s,label:info.label,edge:info.e});
+  }
+
+  const visited=new Set();
+
+  function dfs(vid,pid,depth){
+    const v=V[vid]; visited.add(vid);
+    let r='';
+    const el=v.value.element;
+
+    // 非 H 才寫元素，或是唯一原子
+    const heavy=V.filter(x=>x.value.element!=='H').length;
+    if(el!=='H'||heavy===0) r+=el;
+
+    // Ring markers — both ends get ?[label]
+    if(vRings[vid]){
+      for(const ri of vRings[vid]){
+        r+='?['+ri.label+']';
+      }
+    }
+
+    // spanning tree children，排除 parent
+    const kids=v.spanningTreeChildren.filter(c=>c!==pid);
+    if(!kids.length) return r;
+
+    // 排序：把非 H 放前面、main chain 優先
+    kids.sort((a,b)=>{
+      const va=V[a], vb=V[b];
+      if(va.value.element==='H'&&vb.value.element!=='H') return 1;
+      if(vb.value.element==='H'&&va.value.element!=='H') return -1;
+      return (va.value.smilesOrder||0) - (vb.value.smilesOrder||0);
+    });
+
+    for(let i=0;i<kids.length;i++){
+      const cid=kids[i], cv=V[cid];
+      const ang=Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
+      const e=tree.getEdge(vid,cid);
+      const bt=e?e.bondType:'-';
+      const bc=bt==='='?'=':bt==='#'?'~':'';
+      const dir='[:'+Math.round(ang)+']';
+      const childStr=dfs(cid,vid,depth+1);
+      if(i===0) r+=bc+dir+childStr;
+      else r+='('+bc+dir+childStr+')';
+    }
+    return r;
+  }
+
+  const root=V.find(v=>v.parentVertexId===null);
+  if(!root) return '';
+  return '\\chemfig{'+dfs(root.id,null,0)+'}';
+}
+
+// 從 PubChem 2D JSON 直接生成 chemfig（不依賴 SmilesDrawer 內部 Graph）
+async function pubchem2DToChemfig(cid){
+  const r=await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+cid+'/JSON?record_type=2d');
+  if(!r.ok) throw new Error('PubChem 2D API 失敗');
+  const d=await r.json();
+  const c=d.PC_Compounds[0];
+  const atoms=c.atoms, bonds=c.bonds;
+  const conf=c.coords[0].conformers[0];
+  const xs=conf.x, ys=conf.y;
+  const n=atoms.aid.length;
+
+  // 建鄰接表
+  const adj=Array.from({length:n+1},()=>[]);
+  const bondType={};
+  for(let i=0;i<bonds.aid1.length;i++){
+    const u=bonds.aid1[i], v=bonds.aid2[i];
+    adj[u].push(v); adj[v].push(u);
+    const k=Math.min(u,v)+'_'+Math.max(u,v);
+    const o=bonds.order[i];
+    bondType[k]=o===2?'=':o===3?'#':'-';
+  }
+
+  // 元素編號對照（PubChem 用原子序）
+  const EL=['','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar'];
+
+  // BFS spanning tree
+  const parent=new Array(n+1).fill(0);
+  const treeKids=Array.from({length:n+1},()=>[]);
+  const visited=new Array(n+1).fill(false);
+  const q=[1]; visited[1]=true;
+  while(q.length){
+    const u=q.shift();
+    for(const v of adj[u]){
+      if(!visited[v]){
+        visited[v]=true; parent[v]=u;
+        treeKids[u].push(v);
+        q.push(v);
+      }
+    }
+  }
+
+  // ring edges (不在 BFS tree 裡的)
+  const ringMap={}; let ri=0;
+  for(let i=0;i<bonds.aid1.length;i++){
+    const u=bonds.aid1[i], v=bonds.aid2[i];
+    if(parent[u]!==v&&parent[v]!==u){
+      const k=Math.min(u,v)+'_'+Math.max(u,v);
+      if(!ringMap[k]) ringMap[k]={label:'r'+(++ri),u,v};
+    }
+  }
+
+  const vRings={};
+  for(const[k,info] of Object.entries(ringMap)){
+    if(!vRings[info.u]) vRings[info.u]=[];
+    vRings[info.u].push({other:info.v,label:info.label,edgeKey:k});
+    if(!vRings[info.v]) vRings[info.v]=[];
+    vRings[info.v].push({other:info.u,label:info.label,edgeKey:k});
+  }
+
+  function idxToEl(i){ const an=atoms.element[i-1]; return an<=17?EL[an]:'#'+an; }
+
+  function dfs(u,p){
+    let r='';
+    const el=idxToEl(u);
+    // H 只在是唯一原子時才寫
+    const heavy=atoms.element.filter(e=>e!==1).length;
+    if(atoms.element[u-1]!==1||heavy===0) r+=el;
+
+    if(vRings[u]){
+      for(const ri of vRings[u]) r+='?['+ri.label+']';
+    }
+
+    const kids=treeKids[u].filter(c=>c!==p);
+    if(!kids.length) return r;
+
+    for(let i=0;i<kids.length;i++){
+      const v=kids[i];
+      const ang=Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
+      const k=Math.min(u,v)+'_'+Math.max(u,v);
+      const bt=bondType[k]||'-';
+      const bc=bt==='='?'=':bt==='#'?'~':'';
+      const dir='[:'+Math.round(ang)+']';
+      const childStr=dfs(v,u);
+      if(i===0) r+=bc+dir+childStr;
+      else r+='('+bc+dir+childStr+')';
+    }
+    return r;
+  }
+
+  return '\\chemfig{'+dfs(1,0)+'}';
+}
+
+async function pubchemFetch(name){
+  const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(name)}/property/IsomericSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
+  if(!r.ok) return null;
+  const d=await r.json();
+  return d.PropertyTable.Properties[0];
+}
+
+async function translateZhToEn(text){
+  const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh-TW|en`);
+  if(!r.ok) return null;
+  const d=await r.json();
+  if(d.responseStatus===200){
+    const t=d.responseData.translatedText;
+    if(t&&t!==text) return t;
+  }
+  return null;
+}
+
+async function run(){
+  const q=document.getElementById('q').value.trim();
+  if(!q) return;
+  document.getElementById('results').style.display='none';
+
+  setStatus(step('直接查詢 PubChem','running')+' 查詢中…');
+
+  let props=null;
+  let usedTranslation=false;
+  let translatedTo='';
+
+  props=await pubchemFetch(q);
+
+  if(!props){
+    setStatus(step('直接查詢 PubChem','fail')+step('翻譯繁中→英文','running')+' 翻譯中…');
+    const en=await translateZhToEn(q);
+    if(en){
+      translatedTo=en;
+      setStatus(step('直接查詢 PubChem','fail')+step('翻譯','done')+`「${en}」`+step('查詢 PubChem','running')+' 再次查詢…');
+      props=await pubchemFetch(en);
+      if(props) usedTranslation=true;
+    }
+    if(!props){
+      setStatus(step('直接查詢','fail')+step('翻譯查詢','fail')+' 查無結果，請試試英文名或 IUPAC 名稱',true);
+      return;
+    }
+  }
+
+  const {CID,IsomericSMILES,SMILES:canonicalSMILES,MolecularFormula:formula,MolecularWeight:mw,IUPACName:iupac}=props;
+  const smiles=IsomericSMILES||canonicalSMILES||'';
+
+  document.getElementById('iupac').textContent=iupac||'';
+  document.getElementById('formula').textContent='分子式：'+formula;
+  document.getElementById('mw').textContent='分子量：'+parseFloat(mw).toFixed(2)+' g/mol';
+  document.getElementById('smiles').textContent=smiles;
+  document.getElementById('mhchem').textContent='\\ce{'+formula+'}';
+  document.getElementById('ce-p').textContent=formula;
+  document.getElementById('pc3d').href='https://pubchem.ncbi.nlm.nih.gov/compound/'+CID+'#section=3D-Conformer';
+
+  const badge=document.getElementById('xlat-badge');
+  const xfrom=document.getElementById('xlat-from');
+  if(usedTranslation){
+    badge.style.display='';
+    xfrom.style.display='';
+    xfrom.textContent='翻譯結果：「'+q+'」→「'+translatedTo+'」';
+  } else {
+    badge.style.display='none';
+    xfrom.style.display='none';
+  }
+
+  document.getElementById('status').style.display='none';
+  document.getElementById('results').style.display='block';
+
+  if(!sd) sd=new SmilesDrawer.Drawer({width:280,height:210,themes:{light:{C:'#1a1a1a',O:'#c0392b',N:'#2980b9',S:'#d4ac0d',P:'#8e44ad',F:'#16a085',Cl:'#27ae60',Br:'#a04000',I:'#6c3483',BACKGROUND:'transparent'}}});
+  SmilesDrawer.parse(smiles,function(tree){
+    sd.draw(tree,'mc','light',false);
+  },function(){
+    document.getElementById('canvas-wrap').innerHTML='<img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG?image_size=small" style="max-width:260px;max-height:200px" alt="結構式"/>';
+  });
+
+  // 從 PubChem 2D API 生成 chemfig（完全繞過 SmilesDrawer 內部 API）
+  try{
+    var cf=await pubchem2DToChemfig(CID);
+    document.getElementById('chemfig-auto').textContent=cf||'';
+    document.getElementById('chemfig-inline').textContent=cf||'\\chemfig{ ... }';
+  }catch(e){
+    document.getElementById('chemfig-auto').textContent='chemfig 生成失敗：'+e.message;
+  }
+}
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+</script>
