@@ -61,7 +61,7 @@
 <div id="results" style="display:none">
   <div class="card">
     <div class="lbl">2D 結構式</div>
-    <div id="canvas-wrap"><canvas id="mc" width="400" height="300"></canvas></div>
+    <div id="canvas-wrap"><canvas id="mc" width="1000" height="750"></canvas></div>
     <a id="pc3d" href="#" style="font-size:12px;color:var(--color-text-info);display:inline-block;margin-top:8px">🔬 PubChem 3D 結構 (上下文即有完整分子資訊) <i class="ti ti-external-link" aria-hidden="true"></i></a>
   </div>
   <div class="card">
@@ -345,7 +345,7 @@ async function run(){
   document.getElementById('status').style.display='none';
   document.getElementById('results').style.display='block';
 
-  if(!sd) sd=new SmilesDrawer.Drawer({width:400,height:300,themes:{light:{C:'#1a1a1a',O:'#c0392b',N:'#2980b9',S:'#d4ac0d',P:'#8e44ad',F:'#16a085',Cl:'#27ae60',Br:'#a04000',I:'#6c3483',BACKGROUND:'transparent'}}});
+  if(!sd) sd=new SmilesDrawer.Drawer({width:1000,height:750,themes:{light:{C:'#1a1a1a',O:'#c0392b',N:'#2980b9',S:'#d4ac0d',P:'#8e44ad',F:'#16a085',Cl:'#27ae60',Br:'#a04000',I:'#6c3483',BACKGROUND:'transparent'}}});
   SmilesDrawer.parse(smiles,function(tree){
     sd.draw(tree,'mc','light',false);
   },function(){
