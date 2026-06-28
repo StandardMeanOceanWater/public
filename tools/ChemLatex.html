@@ -414,6 +414,12 @@ async function pubchem2DToChemfig(cid) {
   const EL = ['', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar'];
   function idxToEl(i) { const an = atoms.element[i - 1]; return an <= 17 ? EL[an] : '#' + an; }
 
+  // Phase A: next-in-chain map (main chain child priority for inline DFS)
+  const nextInChain = {};
+  for (let i = 0; i < mainChain.length - 1; i++) {
+    nextInChain[mainChain[i]] = mainChain[i + 1];
+  }
+
   function dfs(u, p, incomingAngle) {
     if (hiddenH.has(u)) return ''; // guard: hidden H should not appear
     let r = '';
@@ -427,8 +433,11 @@ async function pubchem2DToChemfig(cid) {
     const kids = treeKids[u].filter(c => c !== p);
     if (!kids.length) return r;
 
-    // Phase A fix: sort kids by angular position (clockwise around parent)
+    // Phase A fix: sort kids — main chain child first, then by angular position
+    const next = nextInChain[u];
     kids.sort((a, b) => {
+      if (a === next) return -1;
+      if (b === next) return 1;
       const absA = -Math.atan2(ys[a - 1] - ys[u - 1], xs[a - 1] - xs[u - 1]) * 180 / Math.PI;
       const absB = -Math.atan2(ys[b - 1] - ys[u - 1], xs[b - 1] - xs[u - 1]) * 180 / Math.PI;
       let relA = absA - incomingAngle;
