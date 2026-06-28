@@ -48,15 +48,17 @@
 <div class="tag-row">
   <span style="font-size:12px;color:var(--color-text-secondary)">常用：</span>
   <span class="tag" onclick="go('苯')">苯</span>
-  <span class="tag" onclick="go('乙醇')">乙醇</span>
   <span class="tag" onclick="go('蔗糖')">蔗糖</span>
   <span class="tag" onclick="go('阿斯匹靈')">阿斯匹靈</span>
-  <span class="tag" onclick="go('乙醯水楊酸')">乙醯水楊酸</span>
-  <span class="tag" onclick="go('葡萄糖')">葡萄糖</span>
   <span class="tag" onclick="go('咖啡因')">咖啡因</span>
   <span class="tag" onclick="go('多巴胺')">多巴胺</span>
   <span class="tag" onclick="go('膽固醇')">膽固醇</span>
+  <span class="tag" onclick="go('血紅素')">血紅素</span>
   <span class="tag" onclick="go('青黴素')">青黴素</span>
+  <span class="tag" onclick="go('順丁烯二酸')">順丁烯二酸</span>
+  <span class="tag" onclick="go('乙二胺四乙酸')">乙二胺四乙酸(EDTA)</span>
+  <span class="tag" onclick="go('三氯化六氯合鈷')">三氯化六氯合鈷/無機黃鈷鹽</span>
+  <span class="tag" onclick="go('亞鐵氰化鉀')">亞鐵氰化鉀酸/黃血鹽</span>
 </div>
 
 <div id="status" style="display:none" class="status"></div>
@@ -167,11 +169,13 @@ function treeToChemfig(tree){
 
     for(let i=0;i<kids.length;i++){
       const cid=kids[i], cv=V[cid];
-      const ang=Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
+      // SmilesDrawer positions may be screen coords (y↓), chemfig uses math coords (y↑) → negate
+      const ang=-Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
       const e=tree.getEdge(vid,cid);
       const bt=e?e.bondType:'-';
       const bc=bt==='='?'=':bt==='#'?'~':'';
-      const dir='[:'+Math.round(ang)+']';
+      // [::angle] = absolute angle; NOT [:angle] (relative)
+      const dir='[::'+Math.round(ang)+']';
       const childStr=dfs(cid,vid,depth+1);
       if(i===0) r+=bc+dir+childStr;
       else r+='('+bc+dir+childStr+')';
@@ -261,11 +265,13 @@ async function pubchem2DToChemfig(cid){
 
     for(let i=0;i<kids.length;i++){
       const v=kids[i];
-      const ang=Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
+      // PubChem 2D uses screen coords (y↓), chemfig uses math coords (y↑) → negate angle
+      const ang=-Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
       const k=Math.min(u,v)+'_'+Math.max(u,v);
       const bt=bondType[k]||'-';
       const bc=bt==='='?'=':bt==='#'?'~':'';
-      const dir='[:'+Math.round(ang)+']';
+      // [::angle] = absolute angle from horizontal; NOT [:angle] (relative to previous bond)
+      const dir='[::'+Math.round(ang)+']';
       const childStr=dfs(v,u);
       if(i===0) r+=bc+dir+childStr;
       else r+='('+bc+dir+childStr+')';
