@@ -55,7 +55,7 @@
   <span class="tag" onclick="go('膽固醇')">膽固醇</span>
   <span class="tag" onclick="go('血紅素')">血紅素</span>
   <span class="tag" onclick="go('青黴素')">青黴素</span>
-  <span class="tag" onclick="go('順丁烯二酸')">順丁烯二酸</span>
+  <span class="tag" onclick="go('順丁烯二酸')">順丁烯二酸/馬來酸</span>
   <span class="tag" onclick="go('乙二胺四乙酸')">乙二胺四乙酸(EDTA)</span>
   <span class="tag" onclick="go('三氯化六氯合鈷')">三氯化六氯合鈷/無機黃鈷鹽</span>
   <span class="tag" onclick="go('亞鐵氰化鉀')">亞鐵氰化鉀酸/黃血鹽</span>
@@ -290,7 +290,7 @@ async function pubchem2DToChemfig(cid){
     return r;
   }
 
-  return '\\\\chemfig{'+dfs(1,0,0)+'}';
+  return '\\chemfig{'+dfs(1,0,0)+'}';
 }
 
 async function pubchemFetch(name){
@@ -375,7 +375,7 @@ async function run(){
   try{
     var cf=await pubchem2DToChemfig(CID);
     document.getElementById('chemfig-auto').textContent=cf||'';
-    document.getElementById('chemfig-inline').textContent=cf||'\\\\chemfig{ ... }';
+    document.getElementById('chemfig-inline').textContent=cf||'\\chemfig{ ... }';
     document.getElementById('chemfig-version').textContent='['+CHEMFIG_VERSION+']';
   }catch(e){
     document.getElementById('chemfig-auto').textContent='chemfig 生成失敗：'+e.message;
