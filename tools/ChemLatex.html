@@ -102,9 +102,10 @@
 <script>
 let sd=null;
 // === chemfig algorithm version (bump when algorithm changes) ===
+// v2.2 2026-06-28: [:relative] angles (not [::absolute]) — compat with older chemfig
 // v2.1 2026-06-28: [::absolute] angles + y-axis flip (PubChem screen→math coords)
 // v2.0 2026-06-27: pubchem2DToChemfig replaces SmilesDrawer internal API
-const CHEMFIG_VERSION='v2.1 (2026-06-28)';
+const CHEMFIG_VERSION='v2.2 (2026-06-28)';
 function go(n){document.getElementById('q').value=n;run();}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
 
@@ -143,7 +144,7 @@ function treeToChemfig(tree){
 
   const visited=new Set();
 
-  function dfs(vid,pid,depth){
+  function dfs(vid,pid,incomingAngle){
     const v=V[vid]; visited.add(vid);
     let r='';
     const el=v.value.element;
@@ -173,14 +174,16 @@ function treeToChemfig(tree){
 
     for(let i=0;i<kids.length;i++){
       const cid=kids[i], cv=V[cid];
-      // SmilesDrawer positions may be screen coords (y↓), chemfig uses math coords (y↑) → negate
-      const ang=-Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
+      // absolute angle from SmilesDrawer coords (y↓→y↑ flip)
+      const absAng=-Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
+      // [:angle] = RELATIVE to incoming bond
+      let relAng=Math.round(absAng-incomingAngle);
+      if(relAng>180) relAng-=360; else if(relAng<=-180) relAng+=360;
       const e=tree.getEdge(vid,cid);
       const bt=e?e.bondType:'-';
       const bc=bt==='='?'=':bt==='#'?'~':'';
-      // [::angle] = absolute angle; NOT [:angle] (relative)
-      const dir='[::'+Math.round(ang)+']';
-      const childStr=dfs(cid,vid,depth+1);
+      const dir='[:'+relAng+']';
+      const childStr=dfs(cid,vid,absAng);
       if(i===0) r+=bc+dir+childStr;
       else r+='('+bc+dir+childStr+')';
     }
@@ -253,7 +256,7 @@ async function pubchem2DToChemfig(cid){
 
   function idxToEl(i){ const an=atoms.element[i-1]; return an<=17?EL[an]:'#'+an; }
 
-  function dfs(u,p){
+  function dfs(u,p,incomingAngle){
     let r='';
     const el=idxToEl(u);
     // H 只在是唯一原子時才寫
@@ -269,21 +272,24 @@ async function pubchem2DToChemfig(cid){
 
     for(let i=0;i<kids.length;i++){
       const v=kids[i];
-      // PubChem 2D uses screen coords (y↓), chemfig uses math coords (y↑) → negate angle
-      const ang=-Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
+      // absolute angle from PubChem coords (y↓→y↑ flip)
+      const absAng=-Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
+      // [:angle] = RELATIVE to incoming bond → subtract incoming angle
+      let relAng=Math.round(absAng-incomingAngle);
+      // normalize to [-180,180] for clean chemfig
+      if(relAng>180) relAng-=360; else if(relAng<=-180) relAng+=360;
       const k=Math.min(u,v)+'_'+Math.max(u,v);
       const bt=bondType[k]||'-';
       const bc=bt==='='?'=':bt==='#'?'~':'';
-      // [::angle] = absolute angle from horizontal; NOT [:angle] (relative to previous bond)
-      const dir='[::'+Math.round(ang)+']';
-      const childStr=dfs(v,u);
+      const dir='[:'+relAng+']';
+      const childStr=dfs(v,u,absAng);
       if(i===0) r+=bc+dir+childStr;
       else r+='('+bc+dir+childStr+')';
     }
     return r;
   }
 
-  return '\\chemfig{'+dfs(1,0)+'}';
+  return '\\\\chemfig{'+dfs(1,0,0)+'}';
 }
 
 async function pubchemFetch(name){
