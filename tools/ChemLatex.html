@@ -102,10 +102,11 @@
 <script>
 let sd=null;
 // === chemfig algorithm version (bump when algorithm changes) ===
+// v2.3 2026-06-28: add '-' prefix for single bonds (chemfig requires bond char before [:angle])
 // v2.2 2026-06-28: [:relative] angles (not [::absolute]) — compat with older chemfig
 // v2.1 2026-06-28: [::absolute] angles + y-axis flip (PubChem screen→math coords)
 // v2.0 2026-06-27: pubchem2DToChemfig replaces SmilesDrawer internal API
-const CHEMFIG_VERSION='v2.2 (2026-06-28)';
+const CHEMFIG_VERSION='v2.3 (2026-06-28)';
 function go(n){document.getElementById('q').value=n;run();}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
 
@@ -181,7 +182,7 @@ function treeToChemfig(tree){
       if(relAng>180) relAng-=360; else if(relAng<=-180) relAng+=360;
       const e=tree.getEdge(vid,cid);
       const bt=e?e.bondType:'-';
-      const bc=bt==='='?'=':bt==='#'?'~':'';
+      const bc=bt==='='?'=':bt==='#'?'~':'-';
       const dir='[:'+relAng+']';
       const childStr=dfs(cid,vid,absAng);
       if(i===0) r+=bc+dir+childStr;
@@ -280,7 +281,7 @@ async function pubchem2DToChemfig(cid){
       if(relAng>180) relAng-=360; else if(relAng<=-180) relAng+=360;
       const k=Math.min(u,v)+'_'+Math.max(u,v);
       const bt=bondType[k]||'-';
-      const bc=bt==='='?'=':bt==='#'?'~':'';
+      const bc=bt==='='?'=':bt==='#'?'~':'-';
       const dir='[:'+relAng+']';
       const childStr=dfs(v,u,absAng);
       if(i===0) r+=bc+dir+childStr;
