@@ -105,7 +105,7 @@ let sd=null;
 // v2.2 2026-06-28: [:relative] angles (not [::absolute]) — compat with older chemfig
 // v2.1 2026-06-28: [::absolute] angles + y-axis flip (PubChem screen→math coords)
 // v2.0 2026-06-27: pubchem2DToChemfig replaces SmilesDrawer internal API
-const CHEMFIG_VERSION='v2.2 (2026-06-28)';
+const CHEMFIG_VERSION='v3.0 Phase B (2026-06-28) — H merge + C-H hide';
 function go(n){document.getElementById('q').value=n;run();}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
 
@@ -195,101 +195,258 @@ function treeToChemfig(tree){
   return '\\chemfig{'+dfs(root.id,null,0)+'}';
 }
 
-// 從 PubChem 2D JSON 直接生成 chemfig（不依賴 SmilesDrawer 內部 Graph）
-async function pubchem2DToChemfig(cid){
-  const r=await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+cid+'/JSON?record_type=2d');
-  if(!r.ok) throw new Error('PubChem 2D API 失敗');
-  const d=await r.json();
-  const c=d.PC_Compounds[0];
-  const atoms=c.atoms, bonds=c.bonds;
-  const conf=c.coords[0].conformers[0];
-  const xs=conf.x, ys=conf.y;
-  const n=atoms.aid.length;
+// Phase A: shortest-path helper (edge-excluded BFS)
+function _shortestPath(adj, start, end, blockedEdge) {
+  const parent = {}; const visited = new Set([start]); const q = [start]; parent[start] = 0;
+  while (q.length) {
+    const u = q.shift();
+    if (u === end) {
+      const path = [];
+      let cur = end;
+      while (parent[cur] !== 0) { cur = parent[cur]; if (cur !== start) path.unshift(cur); }
+      return path;
+    }
+    for (const v of adj[u]) {
+      const ek = u + '_' + v;
+      if (!visited.has(v) && ek !== blockedEdge && v + '_' + u !== blockedEdge) {
+        visited.add(v); parent[v] = u; q.push(v);
+      }
+    }
+  }
+  return null;
+}
 
-  // 建鄰接表
-  const adj=Array.from({length:n+1},()=>[]);
-  const bondType={};
-  for(let i=0;i<bonds.aid1.length;i++){
-    const u=bonds.aid1[i], v=bonds.aid2[i];
+// Phase A: 從 PubChem 2D JSON 生成 chemfig — longest-path greedy DFS spanning tree
+async function pubchem2DToChemfig(cid) {
+  const r = await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' + cid + '/JSON?record_type=2d');
+  if (!r.ok) throw new Error('PubChem 2D API 失敗');
+  const d = await r.json();
+  const c = d.PC_Compounds[0];
+  const atoms = c.atoms, bonds = c.bonds;
+  const conf = c.coords[0].conformers[0];
+  const xs = conf.x, ys = conf.y;
+  const n = atoms.aid.length;
+
+  // === 全圖（含 H，供 spanning tree 用）===
+  const adj = Array.from({ length: n + 1 }, () => []);
+  const bondType = {};
+  for (let i = 0; i < bonds.aid1.length; i++) {
+    const u = bonds.aid1[i], v = bonds.aid2[i];
     adj[u].push(v); adj[v].push(u);
-    const k=Math.min(u,v)+'_'+Math.max(u,v);
-    const o=bonds.order[i];
-    bondType[k]=o===2?'=':o===3?'#':'-';
+    const k = Math.min(u, v) + '_' + Math.max(u, v);
+    bondType[k] = bonds.order[i] === 2 ? '=' : bonds.order[i] === 3 ? '#' : '-';
   }
 
-  // 元素編號對照（PubChem 用原子序）
-  const EL=['','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar'];
+  // === Heavy-atom graph（不含 H，供 main chain DFS 用）===
+  const isHeavy = new Array(n + 1).fill(false);
+  for (let i = 1; i <= n; i++) { if (atoms.element[i - 1] !== 1) isHeavy[i] = true; }
+  const heavyAdj = Array.from({ length: n + 1 }, () => []);
+  const heavyDegree = new Array(n + 1).fill(0);
+  for (let i = 0; i < bonds.aid1.length; i++) {
+    const u = bonds.aid1[i], v = bonds.aid2[i];
+    if (isHeavy[u] && isHeavy[v]) {
+      heavyAdj[u].push(v); heavyAdj[v].push(u);
+      heavyDegree[u]++; heavyDegree[v]++;
+    }
+  }
 
-  // BFS spanning tree
-  const parent=new Array(n+1).fill(0);
-  const treeKids=Array.from({length:n+1},()=>[]);
-  const visited=new Array(n+1).fill(false);
-  const q=[1]; visited[1]=true;
-  while(q.length){
-    const u=q.shift();
-    for(const v of adj[u]){
-      if(!visited[v]){
-        visited[v]=true; parent[v]=u;
-        treeKids[u].push(v);
-        q.push(v);
+  // === Step 1: 找環原子（heavy graph）===
+  const ringAtoms = new Set();
+  for (let i = 0; i < bonds.aid1.length; i++) {
+    const u = bonds.aid1[i], v = bonds.aid2[i];
+    if (!isHeavy[u] || !isHeavy[v]) continue;
+    const path = _shortestPath(heavyAdj, u, v, u + '_' + v);
+    if (path) { ringAtoms.add(u); ringAtoms.add(v); for (const a of path) ringAtoms.add(a); }
+  }
+
+  // Bridge-adjacent: ring atoms connected to non-ring non-H atoms that connect to other ring atoms
+  const bridgeAdjacent = new Set();
+  for (const ra of ringAtoms) {
+    for (const nb of adj[ra]) {
+      if (!ringAtoms.has(nb) && isHeavy[nb]) {
+        for (const nb2 of adj[nb]) {
+          if (nb2 !== ra && ringAtoms.has(nb2)) { bridgeAdjacent.add(ra); break; }
+        }
       }
     }
   }
 
-  // ring edges (不在 BFS tree 裡的)
-  const ringMap={}; let ri=0;
-  for(let i=0;i<bonds.aid1.length;i++){
-    const u=bonds.aid1[i], v=bonds.aid2[i];
-    if(parent[u]!==v&&parent[v]!==u){
-      const k=Math.min(u,v)+'_'+Math.max(u,v);
-      if(!ringMap[k]) ringMap[k]={label:'r'+(++ri),u,v};
+  // BFS distance from each heavy atom to nearest bridge-adjacent atom
+  const distToBA = new Array(n + 1).fill(Infinity);
+  if (bridgeAdjacent.size > 0) {
+    for (let i = 1; i <= n; i++) {
+      if (!isHeavy[i]) continue;
+      if (bridgeAdjacent.has(i)) { distToBA[i] = 0; continue; }
+      const v = new Set([i]); const q = [[i, 0]];
+      while (q.length) {
+        const [u, d] = q.shift();
+        if (bridgeAdjacent.has(u)) { distToBA[i] = d; break; }
+        for (const w of heavyAdj[u]) { if (!v.has(w)) { v.add(w); q.push([w, d + 1]); } }
+      }
     }
   }
 
-  const vRings={};
-  for(const[k,info] of Object.entries(ringMap)){
-    if(!vRings[info.u]) vRings[info.u]=[];
-    vRings[info.u].push({other:info.v,label:info.label,edgeKey:k});
-    if(!vRings[info.v]) vRings[info.v]=[];
-    vRings[info.v].push({other:info.u,label:info.label,edgeKey:k});
+  // === Step 2: Greedy longest-path DFS（heavy graph only）===
+  const dfsVisited = new Set();
+  let mainChain = [];
+  function dfsLong(at, path) {
+    dfsVisited.add(at); path.push(at);
+    if (path.length > mainChain.length) mainChain = [...path];
+    const hasBA = heavyAdj[at].some(nb => !dfsVisited.has(nb) && bridgeAdjacent.has(nb));
+    const neighbors = [...heavyAdj[at]];
+    neighbors.sort((a, b) => {
+      const aR = ringAtoms.has(a) ? 0 : 1, bR = ringAtoms.has(b) ? 0 : 1;
+      if (aR !== bR) return aR - bR;
+      const aE = heavyDegree[a] === 1 ? 1 : 0, bE = heavyDegree[b] === 1 ? 1 : 0;
+      if (aE !== bE) return aE - bE;
+      if (heavyDegree[a] !== heavyDegree[b]) return heavyDegree[a] - heavyDegree[b];
+      const exitA = adj[a].filter(nb => !ringAtoms.has(nb) && isHeavy[nb]).length;
+      const exitB = adj[b].filter(nb => !ringAtoms.has(nb) && isHeavy[nb]).length;
+      return exitB - exitA;
+    });
+    for (const nb of neighbors) {
+      if (dfsVisited.has(nb)) continue;
+      if (hasBA && ringAtoms.has(at) && ringAtoms.has(nb) && !bridgeAdjacent.has(nb)) continue;
+      dfsLong(nb, path);
+    }
+    path.pop(); dfsVisited.delete(at);
   }
 
-  function idxToEl(i){ const an=atoms.element[i-1]; return an<=17?EL[an]:'#'+an; }
+  // Start selection: heavy endpoints closest to BA
+  const starts = [];
+  const heavyEndpoints = [];
+  for (let i = 1; i <= n; i++) { if (isHeavy[i] && heavyDegree[i] === 1) heavyEndpoints.push(i); }
+  if (bridgeAdjacent.size > 0) {
+    let minDist = Infinity;
+    for (const ep of heavyEndpoints) { if (distToBA[ep] < minDist) minDist = distToBA[ep]; }
+    for (const ep of heavyEndpoints) { if (distToBA[ep] === minDist) starts.push(ep); }
+  } else {
+    for (const ep of heavyEndpoints) starts.push(ep);
+  }
+  if (!starts.length) { for (const ra of ringAtoms) starts.push(ra); }
+  if (!starts.length) starts.push(1);
+  for (const s of starts) dfsLong(s, []);
 
-  function dfs(u,p,incomingAngle){
-    let r='';
-    const el=idxToEl(u);
-    // H 只在是唯一原子時才寫
-    const heavy=atoms.element.filter(e=>e!==1).length;
-    if(atoms.element[u-1]!==1||heavy===0) r+=el;
+  // Step 3: Spanning tree — main chain 當骨幹，其餘 BFS 附加
+  const parent = new Array(n + 1).fill(0);
+  const treeKids = Array.from({ length: n + 1 }, () => []);
+  for (let i = 0; i < mainChain.length - 1; i++) {
+    const u = mainChain[i], v = mainChain[i + 1];
+    parent[v] = u; treeKids[u].push(v);
+  }
 
-    if(vRings[u]){
-      for(const ri of vRings[u]) r+='?['+ri.label+']';
+  const q = [...mainChain];
+  const bfsVisited = new Set(mainChain);
+  while (q.length) {
+    const u = q.shift();
+    for (const v of adj[u]) {
+      if (!bfsVisited.has(v)) {
+        bfsVisited.add(v); parent[v] = u; treeKids[u].push(v); q.push(v);
+      }
     }
+  }
 
-    const kids=treeKids[u].filter(c=>c!==p);
-    if(!kids.length) return r;
+  // === Phase B: H merge pre-processing ===
+  // C-H → hide; O-H → merge as OH/HO; N/S/P-H → keep explicit
+  const mergedH = {}; // O_atom_id -> {text: "OH"/"HO", pos: 1/2}
+  const hiddenH = new Set(); // C-H atoms to suppress
 
-    for(let i=0;i<kids.length;i++){
-      const v=kids[i];
-      // absolute angle from PubChem coords (y↓→y↑ flip)
-      const absAng=-Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
-      // [:angle] = RELATIVE to incoming bond → subtract incoming angle
-      let relAng=Math.round(absAng-incomingAngle);
-      // normalize to [-180,180] for clean chemfig
-      if(relAng>180) relAng-=360; else if(relAng<=-180) relAng+=360;
-      const k=Math.min(u,v)+'_'+Math.max(u,v);
-      const bt=bondType[k]||'-';
-      const bc=bt==='='?'=':bt==='#'?'~':'';
-      const dir='[:'+relAng+']';
-      const childStr=dfs(v,u,absAng);
-      if(i===0) r+=bc+dir+childStr;
-      else r+='('+bc+dir+childStr+')';
+  for (let i = 1; i <= n; i++) {
+    if (atoms.element[i - 1] !== 1) continue; // not H
+    if (adj[i].length !== 1) continue; // not degree 1
+
+    const p = adj[i][0]; // H's only neighbor
+    const pEl = atoms.element[p - 1];
+
+    if (pEl === 6) { // Carbon → hide H
+      hiddenH.add(i);
+      treeKids[p] = treeKids[p].filter(c => c !== i);
+    } else if (pEl === 8) { // Oxygen → merge as OH/HO
+      // Only merge if exactly 1 H child (avoids H2O edge case)
+      const hKids = treeKids[p].filter(c => atoms.element[c - 1] === 1);
+      if (hKids.length === 1 && hKids[0] === i) {
+        const ohAbsAng = -Math.atan2(ys[i - 1] - ys[p - 1], xs[i - 1] - xs[p - 1]) * 180 / Math.PI;
+        const oParent = parent[p];
+        if (oParent && oParent !== 0) {
+          // Relative angle: O-H vs parent→O bond
+          const coAbsAng = -Math.atan2(ys[p - 1] - ys[oParent - 1], xs[p - 1] - xs[oParent - 1]) * 180 / Math.PI;
+          let rel = ohAbsAng - coAbsAng;
+          rel = ((rel % 360) + 360) % 360;
+          if (rel < 180) {
+            mergedH[p] = { text: 'HO', pos: 2 };
+          } else {
+            mergedH[p] = { text: 'OH', pos: 1 };
+          }
+        } else {
+          // O is root: fallback to absolute angle
+          const normAng = ((ohAbsAng % 360) + 360) % 360;
+          if (normAng < 180) {
+            mergedH[p] = { text: 'HO', pos: 2 };
+          } else {
+            mergedH[p] = { text: 'OH', pos: 1 };
+          }
+        }
+        treeKids[p] = treeKids[p].filter(c => c !== i);
+      }
+    }
+    // N(7), S(16), P(15): keep explicit H, no action
+  }
+
+  // Step 4: 環閉合 = 不在 tree 裡的邊
+  const ringMap = {}; let ri = 0;
+  for (let i = 0; i < bonds.aid1.length; i++) {
+    const u = bonds.aid1[i], v = bonds.aid2[i];
+    if (parent[u] !== v && parent[v] !== u) {
+      const k = Math.min(u, v) + '_' + Math.max(u, v);
+      if (!ringMap[k]) ringMap[k] = { label: 'r' + (++ri), u, v };
+    }
+  }
+
+  const vRings = {};
+  for (const [k, info] of Object.entries(ringMap)) {
+    if (!vRings[info.u]) vRings[info.u] = [];
+    vRings[info.u].push({ other: info.v, label: info.label, edgeKey: k });
+    if (!vRings[info.v]) vRings[info.v] = [];
+    vRings[info.v].push({ other: info.u, label: info.label, edgeKey: k });
+  }
+
+  // 元素編號對照（PubChem 用原子序）
+  const EL = ['', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar'];
+  function idxToEl(i) { const an = atoms.element[i - 1]; return an <= 17 ? EL[an] : '#' + an; }
+
+  function dfs(u, p, incomingAngle) {
+    if (hiddenH.has(u)) return ''; // guard: hidden H should not appear
+    let r = '';
+    let el = idxToEl(u);
+    // Phase B: substitute merged O→OH/HO
+    if (mergedH[u]) el = mergedH[u].text;
+    r += el;
+
+    if (vRings[u]) { for (const ri of vRings[u]) r += '?[' + ri.label + ']'; }
+
+    const kids = treeKids[u].filter(c => c !== p);
+    if (!kids.length) return r;
+
+    for (let i = 0; i < kids.length; i++) {
+      const v = kids[i];
+      const absAng = -Math.atan2(ys[v - 1] - ys[u - 1], xs[v - 1] - xs[u - 1]) * 180 / Math.PI;
+      let relAng = Math.round(absAng - incomingAngle);
+      if (relAng > 180) relAng -= 360; else if (relAng <= -180) relAng += 360;
+      const k = Math.min(u, v) + '_' + Math.max(u, v);
+      const bt = bondType[k] || '-';
+      const bc = bt === '=' ? '=' : bt === '#' ? '~' : '';
+      // Phase B: add position parameter for merged OH/HO
+      const mergeInfo = mergedH[v];
+      const posPart = mergeInfo ? (',,,' + mergeInfo.pos) : '';
+      const dir = '[:' + relAng + posPart + ']';
+      const childStr = dfs(v, u, absAng);
+      if (i === 0) r += bc + dir + childStr;
+      else r += '(' + bc + dir + childStr + ')';
     }
     return r;
   }
 
-  return '\\chemfig{'+dfs(1,0,0)+'}';
+  return '\\chemfig{' + dfs(mainChain[0], 0, 0) + '}';
 }
 
 async function pubchemFetch(name){
