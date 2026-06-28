@@ -83,7 +83,7 @@
       <div class="mono" id="mhchem"></div>
       <button class="copy-btn" onclick="cp('mhchem')"><i class="ti ti-copy" aria-hidden="true"></i> 複製 mhchem</button>
 
-    <div class="sec" style="margin-top:.9rem">chemfig 結構式</div>
+    <div class="sec" style="margin-top:.9rem">chemfig 結構式 <span id="chemfig-version" style="font-size:11px;font-weight:400;color:var(--color-text-secondary)"></span></div>
     <div class="mono" id="chemfig-auto"></div>
     <button class="copy-btn" onclick="cp('chemfig-auto')"><i class="ti ti-copy" aria-hidden="true"></i> 複製 chemfig</button>
 
@@ -101,6 +101,10 @@
 <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
 <script>
 let sd=null;
+// === chemfig algorithm version (bump when algorithm changes) ===
+// v2.1 2026-06-28: [::absolute] angles + y-axis flip (PubChem screen→math coords)
+// v2.0 2026-06-27: pubchem2DToChemfig replaces SmilesDrawer internal API
+const CHEMFIG_VERSION='v2.1 (2026-06-28)';
 function go(n){document.getElementById('q').value=n;run();}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
 
@@ -364,9 +368,11 @@ async function run(){
   try{
     var cf=await pubchem2DToChemfig(CID);
     document.getElementById('chemfig-auto').textContent=cf||'';
-    document.getElementById('chemfig-inline').textContent=cf||'\\chemfig{ ... }';
+    document.getElementById('chemfig-inline').textContent=cf||'\\\\chemfig{ ... }';
+    document.getElementById('chemfig-version').textContent='['+CHEMFIG_VERSION+']';
   }catch(e){
     document.getElementById('chemfig-auto').textContent='chemfig 生成失敗：'+e.message;
+    document.getElementById('chemfig-version').textContent='['+CHEMFIG_VERSION+' error]';
   }
 }
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
