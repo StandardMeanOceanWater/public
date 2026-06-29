@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOL2CHEMFIG - Web 版（支援 PubChem）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 0 30px;
+        }
+
+        .mode-btn {
+            padding: 12px 30px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #molInput {
+            height: 200px;
+        }
+
+        #chemfigOutput {
+            height: 300px;
+            background: #fff;
+        }
+
+        .pubchem-search {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .pubchem-search input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .pubchem-search input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.secondary {
+            background: #6c757d;
+        }
+
+        .compound-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .compound-info.show {
+            display: block;
+        }
+
+        .compound-info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .canvas-container {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 400px;
+        }
+
+        .log {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #856404;
+            display: none;
+        }
+
+        .log.show {
+            display: block;
+        }
+
+        .log.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .example-molecules {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            font-size: 12px;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .pubchem-search {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 MOL2CHEMFIG Web</h1>
+            <p>分子結構轉 Chemfig LaTeX 代碼 | 支援 PubChem CID 查詢與 MOL 文件</p>
+        </div>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="switchMode('pubchem')">
+                🔍 PubChem CID 查詢
+            </button>
+            <button class="mode-btn" onclick="switchMode('molfile')">
+                📄 MOL 文件輸入
+            </button>
+        </div>
+
+        <div class="main-content">
+            <!-- 輸入面板 -->
+            <div class="panel">
+                <h2>📝 輸入</h2>
+                
+                <!-- PubChem 模式 -->
+                <div id="pubchemMode">
+                    <div class="pubchem-search">
+                        <input type="text" id="pubchemCID" 
+                               placeholder="輸入 PubChem CID（例如：2244 阿司匹林）" 
+                               onkeypress="if(event.key==='Enter') searchPubChem()">
+                        <button onclick="searchPubChem()" id="searchBtn">
+                            🔍 搜尋
+                        </button>
+                    </div>
+                    <div class="compound-info" id="compoundInfo"></div>
+                    <div class="example-molecules">
+                        <span style="font-size: 14px; color: #666; margin-right: 10px;">快速示例：</span>
+                        <button class="example-btn" onclick="quickSearch(2244)">阿司匹林 (2244)</button>
+                        <button class="example-btn" onclick="quickSearch(702)">乙醇 (702)</button>
+                        <button class="example-btn" onclick="quickSearch(241)">苯 (241)</button>
+                        <button class="example-btn" onclick="quickSearch(2519)">咖啡因 (2519)</button>
+                    </div>
+                </div>
+
+                <!-- MOL 文件模式 -->
+                <div id="molfileMode" style="display:none;">
+                    <textarea id="molInput" placeholder="在此貼上 MOL/SDF 文件內容..."></textarea>
+                    <div class="example-molecules">
+                        <button class="example-btn" onclick="loadMOLExample('ethanol')">乙醇</button>
+                        <button class="example-btn" onclick="loadMOLExample('benzene')">苯</button>
+                        <button class="example-btn" onclick="loadMOLExample('caffeine')">咖啡因</button>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="convertToChemfig()" id="convertBtn">
+                        🔄 轉換為 Chemfig
+                    </button>
+                    <button onclick="copyToClipboard()">📋 複製代碼</button>
+                    <button class="secondary" onclick="clearAll()">🗑️ 清空</button>
+                </div>
+
+                <div id="log" class="log"></div>
+            </div>
+
+            <!-- 輸出面板 -->
+            <div class="panel">
+                <h2>📊 Chemfig 輸出</h2>
+                <textarea id="chemfigOutput" placeholder="Chemfig 代碼將顯示在這裡..." readonly></textarea>
+                
+                <div class="canvas-container">
+                    <canvas id="moleculeCanvas"></canvas>
+                </div>
+
+                <div class="button-group">
+                    <button onclick="downloadChemfig()">💾 下載 .tex 文件</button>
+                    <button onclick="previewStructure()">👁️ 預覽結構</button>
+                    <button onclick="compileLatex()">🔧 編譯預覽</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全域變數
+        let currentMode = 'pubchem';
+        let currentMolData = null;
+        let currentCompoundName = '';
+
+        // 切換模式
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (mode === 'pubchem') {
+                document.getElementById('pubchemMode').style.display = 'block';
+                document.getElementById('molfileMode').style.display = 'none';
+                document.querySelector('.mode-btn:nth-child(1)').classList.add('active');
+            } else {
+                document.getElementById('pubchemMode').style.display = 'none';
+                document.getElementById('molfileMode').style.display = 'block';
+                document.querySelector('.mode-btn:nth-child(2)').classList.add('active');
+            }
+        }
+
+        // PubChem API 查詢
+        async function searchPubChem() {
+            const cid = document.getElementById('pubchemCID').value.trim();
+            if (!cid) {
+                showLog('⚠️ 請輸入 PubChem CID', 'warning');
+                return;
+            }
+
+            const searchBtn = document.getElementById('searchBtn');
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '搜尋中...<span class="loading"></span>';
+            
+            try {
+                // 1. 獲取化合物資訊
+                const infoUrl = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/property/Title,MolecularFormula,MolecularWeight/JSON`;
+                const infoResponse = await fetch(infoUrl);
+                const infoData = await infoResponse.json();
+                
+                if (infoData.PropertyTable && infoData.PropertyTable.Properties) {
+                    const props = infoData.PropertyTable.Properties[0];
+                    currentCompoundName = props.Title;
+                    
+                    const infoDiv = document.getElementById('compoundInfo');
+                    infoDiv.innerHTML = `
+                        <h3>📋 ${props.Title}</h3>
+                        <p>分子式：${props.MolecularFormula}</p>
+                        <p>分子量：${props.MolecularWeight} g/mol</p>
+                        <p>PubChem CID：${cid}</p>
+                    `;
+                    infoDiv.classList.add('show');
+                }
+
+                // 2. 獲取 SDF 結構
+                const sdfUrl = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/SDF?record_type=2d`;
+                const sdfResponse = await fetch(sdfUrl);
+                const sdfText = await sdfResponse.text();
+                
+                currentMolData = sdfText;
+                
+                // 顯示在 textarea 中（如果處於 MOL 模式）
+                if (currentMode === 'molfile') {
+                    document.getElementById('molInput').value = sdfText;
+                }
+                
+                showLog(`✅ 成功載入 ${currentCompoundName} 的結構`, 'success');
+                
+                // 自動轉換
+                convertToChemfig();
+                
+            } catch (error) {
+                showLog(`❌ 查詢失敗：${error.message}`, 'error');
+                console.error('PubChem API Error:', error);
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '🔍 搜尋';
+            }
+        }
+
+        // 快速搜尋
+        function quickSearch(cid) {
+            document.getElementById('pubchemCID').value = cid;
+            searchPubChem();
+        }
+
+        // 載入 MOL 示例
+        function loadMOLExample(type) {
+            const examples = {
+                ethanol: `Ethanol
+  ChemDraw09192014132D
+
+  9  8  0  0  0  0  0  0  0  0999 V2000
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0000    1.5000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5000    1.0000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5000   -0.5000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5000   -1.0000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0000   -0.5000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0000   -1.0000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    3.0000    2.0000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  1  6  1  0  0  0  0
+  2  7  1  0  0  0  0
+  2  8  1  0  0  0  0
+  3  9  1  0  0  0  0
+M  END`,
+                benzene: `Benzene
+  ChemDraw09192014132D
+
+  6  6  0  0  0  0  0  0  0  0999 V2000
+    0.0000    1.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8660    0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8660   -0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000   -1.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.8660   -0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.8660    0.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  2  0  0  0  0
+  4  5  1  0  0  0  0
+  5  6  2  0  0  0  0
+  6  1  1  0  0  0  0
+M  END`,
+                caffeine: `Caffeine
+  ChemDraw09192014132D
+
+ 14 15  0  0  0  0  0  0  0  0999 V2000
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2990    0.7500    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    2.5981   -0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.5981   -1.5000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    3.8971    0.7500    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    5.1962    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.1962   -1.5000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.8971    2.2500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2990    2.2500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000    1.5000    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2990    2.2500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2990    0.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.0000   -1.5000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    5.1962    1.5000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  2  0  0  0  0
+  3  5  1  0  0  0  0
+  5  6  1  0  0  0  0
+  6  7  1  0  0  0  0
+  5  8  1  0  0  0  0
+  8  9  2  0  0  0  0
+  9 10  1  0  0  0  0
+ 10  1  2  0  0  0  0
+ 10 11  1  0  0  0  0
+ 11 12  1  0  0  0  0
+ 12  1  1  0  0  0  0
+  1 13  2  0  0  0  0
+  6 14  2  0  0  0  0
+M  END`
+            };
+            
+            if (examples[type]) {
+                document.getElementById('molInput').value = examples[type];
+                currentMolData = examples[type];
+                showLog(`✅ 已載入 ${type} 示例`, 'success');
+            }
+        }
+
+        // MOL2CHEMFIG 核心轉換類
+        class MOL2CHEMFIGConverter {
+            parseMOL(molText) {
+                const lines = molText.split('\n');
+                const atoms = [];
+                const bonds = [];
+                
+                // 尋找計數行
+                let countsLine = -1;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].match(/^\s*\d+\s+\d+/)) {
+                        countsLine = i;
+                        break;
+                    }
+                }
+                
+                if (countsLine === -1) throw new Error('無效的 MOL 格式');
+                
+                const parts = lines[countsLine].trim().split(/\s+/);
+                const numAtoms = parseInt(parts[0]);
+                const numBonds = parseInt(parts[1]);
+                
+                // 解析原子
+                for (let i = 0; i < numAtoms; i++) {
+                    const line = lines[countsLine + 1 + i];
+                    if (!line || line.length < 32) continue;
+                    
+                    atoms.push({
+                        id: i + 1,
+                        x: parseFloat(line.substring(0, 10)),
+                        y: parseFloat(line.substring(10, 20)),
+                        z: parseFloat(line.substring(20, 30)),
+                        symbol: line.substring(31, 34).trim() || 'C'
+                    });
+                }
+                
+                // 解析鍵
+                const bondStart = countsLine + 1 + numAtoms;
+                for (let i = 0; i < numBonds; i++) {
+                    const line = lines[bondStart + i];
+                    if (!line || line.length < 9) continue;
+                    
+                    bonds.push({
+                        atom1: parseInt(line.substring(0, 3)),
+                        atom2: parseInt(line.substring(3, 6)),
+                        type: parseInt(line.substring(6, 9))
+                    });
+                }
+                
+                return { atoms, bonds };
+            }
+
+            generateChemfig(molData) {
+                const { atoms, bonds } = molData;
+                if (atoms.length === 0) return '';
+                
+                // 建立鄰接表
+                const graph = {};
+                atoms.forEach(atom => {
+                    graph[atom.id] = {
+                        ...atom,
+                        neighbors: []
+                    };
+                });
+                
+                bonds.forEach(bond => {
+                    graph[bond.atom1].neighbors.push({
+                        id: bond.atom2,
+                        type: bond.type
+                    });
+                    graph[bond.atom2].neighbors.push({
+                        id: bond.atom1,
+                        type: bond.type
+                    });
+                });
+                
+                // DFS 生成 Chemfig
+                const visited = new Set();
+                const startAtom = atoms[0].id;
+                
+                const dfs = (atomId, parentAngle = 0) => {
+                    if (visited.has(atomId)) return '';
+                    visited.add(atomId);
+                    
+                    const atom = graph[atomId];
+                    let result = atom.symbol;
+                    
+                    const unvisited = atom.neighbors.filter(n => !visited.has(n.id));
+                    
+                    if (unvisited.length > 0) {
+                        const branches = unvisited.map(neighbor => {
+                            const target = graph[neighbor.id];
+                            let angle = Math.atan2(
+                                target.y - atom.y,
+                                target.x - atom.x
+                            ) * 180 / Math.PI;
+                            
+                            // 標準化角度
+                            let relAngle = ((angle - parentAngle) % 360 + 360) % 360;
+                            
+                            let bondStr = '';
+                            switch(neighbor.type) {
+                                case 2: bondStr = '='; break;
+                                case 3: bondStr = '~'; break;
+                                default: bondStr = '';
+                            }
+                            
+                            bondStr += `[:${Math.round(relAngle)}]`;
+                            return bondStr + dfs(neighbor.id, angle);
+                        });
+                        
+                        result += '(' + branches.join(')(') + ')';
+                    }
+                    
+                    return result;
+                };
+                
+                return '\\chemfig{' + dfs(startAtom) + '}';
+            }
+        }
+
+        const converter = new MOL2CHEMFIGConverter();
+
+        // 轉換為 Chemfig
+        function convertToChemfig() {
+            let molText = '';
+            
+            if (currentMode === 'pubchem') {
+                if (!currentMolData) {
+                    showLog('⚠️ 請先搜尋化合物', 'warning');
+                    return;
+                }
+                molText = currentMolData;
+            } else {
+                molText = document.getElementById('molInput').value;
+                if (!molText.trim()) {
+                    showLog('⚠️ 請輸入 MOL 文件內容', 'warning');
+                    return;
+                }
+            }
+            
+            try {
+                const molData = converter.parseMOL(molText);
+                const chemfig = converter.generateChemfig(molData);
+                
+                document.getElementById('chemfigOutput').value = chemfig;
+                showLog('✅ 轉換成功！', 'success');
+                
+                // 自動預覽
+                previewStructure();
+                
+            } catch (error) {
+                showLog(`❌ 轉換失敗：${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+
+        // 預覽結構
+        function previewStructure() {
+            let molText = '';
+            
+            if (currentMode === 'pubchem') {
+                molText = currentMolData;
+            } else {
+                molText = document.getElementById('molInput').value;
+            }
+            
+            if (!molText) return;
+            
+            const canvas = document.getElementById('moleculeCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            try {
+                const molData = converter.parseMOL(molText);
+                
+                canvas.width = 400;
+                canvas.height = 400;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 計算邊界
+                let minX = Infinity, minY = Infinity;
+                let maxX = -Infinity, maxY = -Infinity;
+                
+                molData.atoms.forEach(atom => {
+                    minX = Math.min(minX, atom.x);
+                    minY = Math.min(minY, atom.y);
+                    maxX = Math.max(maxX, atom.x);
+                    maxY = Math.max(maxY, atom.y);
+                });
+                
+                const padding = 50;
+                const scaleX = (canvas.width - 2 * padding) / (maxX - minX || 1);
+                const scaleY = (canvas.height - 2 * padding) / (maxY - minY || 1);
+                const scale = Math.min(scaleX, scaleY) * 0.8;
+                
+                const offsetX = (canvas.width - (maxX - minX) * scale) / 2;
+                const offsetY = (canvas.height - (maxY - minY) * scale) / 2;
+                
+                function transform(atom) {
+                    return {
+                        x: offsetX + (atom.x - minX) * scale,
+                        y: canvas.height - offsetY - (atom.y - minY) * scale
+                    };
+                }
+                
+                // 繪製鍵
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                
+                molData.bonds.forEach(bond => {
+                    const a1 = molData.atoms.find(a => a.id === bond.atom1);
+                    const a2 = molData.atoms.find(a => a.id === bond.atom2);
+                    if (!a1 || !a2) return;
+                    
+                    const p1 = transform(a1);
+                    const p2 = transform(a2);
+                    
+                    if (bond.type === 2) {
+                        const dx = p2.x - p1.x;
+                        const dy = p2.y - p1.y;
+                        const len = Math.sqrt(dx * dx + dy * dy);
+                        const offset = 3;
+                        const nx = -dy / len * offset;
+                        const ny = dx / len * offset;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x + nx, p1.y + ny);
+                        ctx.lineTo(p2.x + nx, p2.y + ny);
+                        ctx.stroke();
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x - nx, p1.y - ny);
+                        ctx.lineTo(p2.x - nx, p2.y - ny);
+                        ctx.stroke();
+                    } else {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                });
+                
+                // 繪製原子
+                molData.atoms.forEach(atom => {
+                    const pos = transform(atom);
+                    
+                    const colors = {
+                        'C': '#666',
+                        'O': '#e74c3c',
+                        'N': '#3498db',
+                        'H': '#95a5a6',
+                        'S': '#f1c40f',
+                        'P': '#e67e22',
+                        'Cl': '#1abc9c',
+                        'F': '#9b59b6'
+                    };
+                    
+                    ctx.fillStyle = colors[atom.symbol] || '#2ecc71';
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    if (atom.symbol !== 'C') {
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(atom.symbol, pos.x, pos.y);
+                    }
+                });
+                
+            } catch (error) {
+                console.error('預覽錯誤:', error);
+            }
+        }
+
+        // 輔助功能
+        function copyToClipboard() {
+            const output = document.getElementById('chemfigOutput');
+            if (!output.value) {
+                showLog('⚠️ 沒有可複製的內容', 'warning');
+                return;
+            }
+            
+            navigator.clipboard.writeText(output.value).then(() => {
+                showLog('📋 已複製到剪貼板！', 'success');
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('pubchemCID').value = '';
+            document.getElementById('molInput').value = '';
+            document.getElementById('chemfigOutput').value = '';
+            document.getElementById('compoundInfo').classList.remove('show');
+            currentMolData = null;
+            
+            const canvas = document.getElementById('moleculeCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            showLog('🗑️ 已清空');
+        }
+
+        function downloadChemfig() {
+            const output = document.getElementById('chemfigOutput').value;
+            if (!output) {
+                showLog('⚠️ 沒有可下載的內容', 'warning');
+                return;
+            }
+            
+            const fullDoc = `\\documentclass{article}
+\\usepackage{chemfig}
+\\begin{document}
+${output}
+\\end{document}`;
+            
+            const blob = new Blob([fullDoc], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentCompoundName || 'molecule'}.tex`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showLog('💾 文件已下載', 'success');
+        }
+
+        function compileLatex() {
+            showLog('ℹ️ 請將生成的 Chemfig 代碼複製到支援 LaTeX 的編輯器中編譯', 'info');
+        }
+
+        function showLog(message, type = 'warning') {
+            const log = document.getElementById('log');
+            log.textContent = message;
+            log.className = 'log show ' + type;
+            setTimeout(() => {
+                log.classList.remove('show');
+            }, 5000);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            showLog('👋 歡迎使用！請輸入 PubChem CID 或切換到 MOL 文件模式', 'info');
+        });
+    </script>
+</body>
+</html>
