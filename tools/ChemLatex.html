@@ -105,15 +105,16 @@
 <script>
 let sd=null;
 // === chemfig algorithm version (bump when algorithm changes) ===
-// v2.2 2026-06-28: [:relative] angles (not [::absolute]) — compat with older chemfig
-// v2.1 2026-06-28: [::absolute] angles + y-axis flip (PubChem screen→math coords)
+// v2.2 2026-06-28: historical relative-angle attempt
+// v2.1 2026-06-28: historical absolute-angle attempt + y-axis flip (PubChem screen→math coords)
 // v2.0 2026-06-27: pubchem2DToChemfig replaces SmilesDrawer internal API
 // v3.3 2026-06-28: metal coordination — PubChem PNG 2D + star chemfig from metal center
 // v3.4 2026-06-28: precise angles + OH root + wedge bonds (benchmark: sucrose / maleic acid)
 // v3.5 2026-06-29: curated coordination schematic for hexamminecobalt(III) chloride
 // v3.7 2026-06-30: GENERIC coordination SVG for fragmented SMILES — linear / square-planar /
 //                  tetrahedral / octahedral templates; covers middle-school coordination examples
-const CHEMFIG_VERSION='v3.7 (2026-06-30) generic coordination SVG + curated special cases + wiki/alias lookup';
+// v3.8 2026-06-30: output absolute chemfig angles with [:angle] instead of relative turn angles
+const CHEMFIG_VERSION='v3.8 (2026-06-30) absolute chemfig angles + generic coordination SVG + curated special cases + wiki/alias lookup';
 function go(n){document.getElementById('q').value=n;run();}
 function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
 
@@ -158,6 +159,9 @@ function normRel(rel){
   let r=Math.round(rel);
   if(r>180) r-=360; else if(r<=-180) r+=360;
   return r;
+}
+function chemfigAbsAng(abs){
+  return normRel(abs);
 }
 function bondOrderChar(order){
   return order===2?'=':order===3?'~':'-';
@@ -215,25 +219,24 @@ function coordComplexToChemfig(atoms,bonds,xs,ys,n,adj,bondOrder){
     const kids=adj[u].filter(v=>v!==p&&!bondUsed.has(Math.min(u,v)+'_'+Math.max(u,v)));
     kids.sort((a,b)=>normRel(absAngFrom(u,a,xs,ys)-inAng)-normRel(absAngFrom(u,b,xs,ys)-inAng));
     for(let i=0;i<kids.length;i++){
-      const v=kids[i],abs=absAngFrom(u,v,xs,ys),rel=normRel(abs-inAng);
+      const v=kids[i],abs=absAngFrom(u,v,xs,ys),ang=chemfigAbsAng(abs);
       const k=Math.min(u,v)+'_'+Math.max(u,v);
       const bc=bondOrderChar(bondOrder[k]>=4?1:bondOrder[k]);
       const sub=ligBranch(v,u,abs);
-      if(i===0) r+=bc+'[:'+rel+']'+sub;
-      else r+='('+bc+'[:'+rel+']'+sub+')';
+      if(i===0) r+=bc+'[:'+ang+']'+sub;
+      else r+='('+bc+'[:'+ang+']'+sub+')';
     }
     return r;
   }
   let body=idxToEl(atoms.element[metalId-1]);
   if(!ligands.length) return '\\chemfig{'+body+'}';
-  const a0=absAngFrom(metalId,ligands[0],xs,ys);
   for(let i=0;i<ligands.length;i++){
     const lid=ligands[i],abs=absAngFrom(metalId,lid,xs,ys);
-    const rel=normRel(i===0?abs:abs-a0);
+    const ang=chemfigAbsAng(abs);
     bondUsed.add(Math.min(metalId,lid)+'_'+Math.max(metalId,lid));
     const sub=ligBranch(lid,metalId,abs);
-    if(i===0) body+='-[:'+rel+']'+sub;
-    else body+='(-[:'+rel+']'+sub+')';
+    if(i===0) body+='-[:'+ang+']'+sub;
+    else body+='(-[:'+ang+']'+sub+')';
   }
   const ions=[];
   for(let i=1;i<=n;i++){
@@ -276,7 +279,33 @@ return '\\chemfig{N~[:180]C-[:0]Fe(-[:60]C~[:60]N)(-[:120]C~[:120]N)(-[:180]C~[:
     /hexamminecobalt|hexaaminecobalt|\[co\(nh3\)6\]/.test(name) ||
     normalizedSmiles==='N.N.N.N.N.N.[Cl-].[Cl-].[Cl-].[Co+3]';
   if(isHexammineCobalt){
-return '\\chemfig{Co(-[:0]NH_3)(-[:60]NH_3)(-[:120]NH_3)(-[:180]NH_3)(-[:240]NH_3)(-[:300]NH_3)} (+ 3 Cl^{-})';
+return '\chemfig{
+                               \mcfright{Fe}{^{2\mcfplus}}% 1
+          -[:330,,,2,draw=none]^{\mcfminus}C% 17
+                                  (
+               -[:30,,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 2
+                                  )
+                                  (
+       -[:182.1,2.495,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 3
+                                  )
+                                  (
+       -[:130.9,2.646,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 4
+                                  )
+                                  (
+              -[:270,,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 5
+                                  )
+                     ~[:330,,2]N% 11
+    -[:130.9,2.646,,,draw=none]\mcfright{C}{^{\mcfminus}}% 16
+                         ~[:90]N% 10
+          -[:270,3,,,draw=none]\mcfright{C}{^{\mcfminus}}% 15
+                        ~[:210]N% 9
+           -[:90,2,,,draw=none]\mcfright{C}{^{\mcfminus}}% 14
+                        ~[:190]N% 8
+    -[:317.9,1.629,,,draw=none]\mcfright{C}{^{\mcfminus}}% 13
+                        ~[:290]N% 7
+     -[:62.1,2.495,,,draw=none]\mcfright{C}{^{\mcfminus}}% 12
+                         ~[:90]N% 6
+}';
   }
 
   return null;
@@ -451,7 +480,7 @@ function pubchem2DFromCompound(c,smiles){
       return normRel(inAng-absAngFrom(u,a,xs,ys))-normRel(inAng-absAngFrom(u,b,xs,ys));
     });
     for(let i=0;i<kids.length;i++){
-      const v=kids[i],abs=absAngFrom(u,v,xs,ys),rel=normRel(inAng-abs);
+      const v=kids[i],abs=absAngFrom(u,v,xs,ys),ang=chemfigAbsAng(abs);
       const k=Math.min(u,v)+'_'+Math.max(u,v);
       let bc=bondPrefix(u,v,bondOrder[k]||1,atoms,adj,xs,ys,hiddenH);
       if(!bc) bc=bondType[k]||'-';
@@ -459,8 +488,8 @@ function pubchem2DFromCompound(c,smiles){
       if(i===0&&mergedH[u]) posPart=',,'+mergedH[u].pos;
       else if(mergedH[v]) posPart=',,,'+mergedH[v].pos;
       const childStr=dfs(v,u,abs);
-      if(i===0) r+=bc+'[:'+rel+posPart+']'+childStr;
-      else r+='('+bc+'[:'+rel+posPart+']'+childStr+')';
+      if(i===0) r+=bc+'[:'+ang+posPart+']'+childStr;
+      else r+='('+bc+'[:'+ang+posPart+']'+childStr+')';
     }
     return r;
   }
@@ -746,13 +775,12 @@ function treeToChemfig(tree){
       const cid=kids[i], cv=V[cid];
       // absolute angle from SmilesDrawer coords (y↓→y↑ flip)
       const absAng=-Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
-      // [:angle] = RELATIVE to incoming bond
-      let relAng=Math.round(absAng-incomingAngle);
-      if(relAng>180) relAng-=360; else if(relAng<=-180) relAng+=360;
+      // [:angle] is an absolute chemfig direction.
+      const outAng=chemfigAbsAng(absAng);
       const e=tree.getEdge(vid,cid);
       const bt=e?e.bondType:'-';
       const bc=bt==='='?'=':bt==='#'?'~':'';
-      const dir='[:'+relAng+']';
+      const dir='[:'+outAng+']';
       const childStr=dfs(cid,vid,absAng);
       if(i===0) r+=bc+dir+childStr;
       else r+='('+bc+dir+childStr+')';
