@@ -279,34 +279,7 @@ return '\\chemfig{N~[:180]C-[:0]Fe(-[:60]C~[:60]N)(-[:120]C~[:120]N)(-[:180]C~[:
     /hexamminecobalt|hexaaminecobalt|\[co\(nh3\)6\]/.test(name) ||
     normalizedSmiles==='N.N.N.N.N.N.[Cl-].[Cl-].[Cl-].[Co+3]';
   if(isHexammineCobalt){
-return '\chemfig{
-                               \mcfright{Fe}{^{2\mcfplus}}% 1
-          -[:330,,,2,draw=none]^{\mcfminus}C% 17
-                                  (
-               -[:30,,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 2
-                                  )
-                                  (
-       -[:182.1,2.495,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 3
-                                  )
-                                  (
-       -[:130.9,2.646,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 4
-                                  )
-                                  (
-              -[:270,,2,,draw=none]\mcfright{K}{^{\mcfplus}}% 5
-                                  )
-                     ~[:330,,2]N% 11
-    -[:130.9,2.646,,,draw=none]\mcfright{C}{^{\mcfminus}}% 16
-                         ~[:90]N% 10
-          -[:270,3,,,draw=none]\mcfright{C}{^{\mcfminus}}% 15
-                        ~[:210]N% 9
-           -[:90,2,,,draw=none]\mcfright{C}{^{\mcfminus}}% 14
-                        ~[:190]N% 8
-    -[:317.9,1.629,,,draw=none]\mcfright{C}{^{\mcfminus}}% 13
-                        ~[:290]N% 7
-     -[:62.1,2.495,,,draw=none]\mcfright{C}{^{\mcfminus}}% 12
-                         ~[:90]N% 6
-}';
-  }
+return '\chemfig{\mcfright{Fe}{^{2\mcfplus}}-[:330,,,2,draw=none]^{\mcfminus}C(-[:30,,2,,draw=none]\mcfright{K}{^{\mcfplus}})(-[:182.1,2.495,2,,draw=none]\mcfright{K}{^{\mcfplus}})(-[:130.9,2.646,2,,draw=none]\mcfright{K}{^{\mcfplus}})(-[:270,,2,,draw=none]\mcfright{K}{^{\mcfplus}})~[:330,,2]N-[:130.9,2.646,,,draw=none]\mcfright{C}{^{\mcfminus}}~[:90]N-[:270,3,,,draw=none]\mcfright{C}{^{\mcfminus}}~[:210]N-[:90,2,,,draw=none]\mcfright{C}{^{\mcfminus}}~[:190]N-[:317.9,1.629,,,draw=none]\mcfright{C}{^{\mcfminus}}~[:290]N-[:62.1,2.495,,,draw=none]\mcfright{C}{^{\mcfminus}}~[:90]N';  }
 
   return null;
 }
