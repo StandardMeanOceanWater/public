@@ -4,7 +4,7 @@ layout: default
 ---
 
 # 化學工具
-- [繁體中文查化學結構式（Chem2D）](tools/ChemLatex.html) — 輸入中文名稱，輸出結構式及建議3D結構式網站。
+- [繁體中文查化學結構式（Chem2D）](tools/Chem2D.html) — 輸入中文名稱，輸出結構式及建議3D結構式網站。
 - [繁體中文查分子LATEX語法（ChemLatex）](tools/ChemLatex.html) — 輸入中文名稱，自動產生 LaTeX chemfig 結構式。
 
 ---
