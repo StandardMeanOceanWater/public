@@ -86,19 +86,8 @@
 <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
 <script>
 let sd=null;
-// === chemfig algorithm version (bump when algorithm changes) ===
-// v2.2 2026-06-28: historical relative-angle attempt
-// v2.1 2026-06-28: historical absolute-angle attempt + y-axis flip (PubChem screen→math coords)
-// v2.0 2026-06-27: pubchem2DToChemfig replaces SmilesDrawer internal API
-// v3.3 2026-06-28: metal coordination — PubChem PNG 2D + star chemfig from metal center
-// v3.4 2026-06-28: precise angles + OH root + wedge bonds (benchmark: sucrose / maleic acid)
-// v3.5 2026-06-29: curated coordination schematic for hexamminecobalt(III) chloride
-// v3.7 2026-06-30: GENERIC coordination SVG for fragmented SMILES — linear / square-planar /
-//                  tetrahedral / octahedral templates; covers middle-school coordination examples
-// v3.8 2026-06-30: output absolute chemfig angles with [:angle] instead of relative turn angles
-const CHEMFIG_VERSION='v4.0 (2026-06-30) external links (MolView/ChemTube3D/PubChem3D)';
+
 function go(n){document.getElementById('q').value=n;run();}
-function cp(id){navigator.clipboard.writeText(document.getElementById(id).innerText).catch(()=>{});}
 
 function setStatus(html,isErr){
   const s=document.getElementById('status');
@@ -107,365 +96,21 @@ function setStatus(html,isErr){
   s.innerHTML=html;
   document.getElementById('results').style.display='none';
 }
+
 function step(label,state){return`<span class="step ${state}">${label}</span>`;}
-
-// PubChem 原子序 → chemfig 元素符號（含常見金屬）
-const EL_SYMBOL=['','H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca','Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I','Xe','Cs','Ba','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Po','At','Rn'];
-function idxToEl(an){return an>0&&an<EL_SYMBOL.length&&EL_SYMBOL[an]?EL_SYMBOL[an]:'\\#'+an;}
-
-const METAL_Z=new Set([3,4,11,12,13,19,20,21,22,23,24,25,26,27,28,29,30,31,37,38,39,40,41,42,43,44,45,46,47,48,49,50,55,56,57,72,73,74,75,76,77,78,79,80,81,82,83]);
-function isMetalZ(z){return METAL_Z.has(z);}
-function bondChar(order){return order===2?'=':order===3?'~':'-';}
 
 function smilesNeedsPubChem2D(smiles){
   if(!smiles||!smiles.includes('.')) return false;
   return /\[(?:Fe|Co|Ni|Cu|Zn|Mn|Cr|Pt|Pd|Au|Ag|Hg|Ru|Rh|Ir|Os|Re|Mo|W|V|Ti|Sc|La|Ce|K\+|Na\+|Li\+|Ca\+|Mg\+)/i.test(smiles);
 }
 
-function isCoordinationCompound(atoms,bonds,smiles){
-  for(let i=0;i<bonds.aid1.length;i++){
-    if(bonds.order[i]>=4){
-      const eu=atoms.element[bonds.aid1[i]-1],ev=atoms.element[bonds.aid2[i]-1];
-      if(isMetalZ(eu)||isMetalZ(ev)) return true;
-    }
-  }
-  return smilesNeedsPubChem2D(smiles);
-}
-
-function snapAng(deg){return Math.round(deg/30)*30;}
-
-function absAngFrom(u,v,xs,ys){
-  return -Math.atan2(ys[v-1]-ys[u-1],xs[v-1]-xs[u-1])*180/Math.PI;
-}
-function normRel(rel){
-  let r=Math.round(rel);
-  if(r>180) r-=360; else if(r<=-180) r+=360;
-  return r;
-}
-function chemfigAbsAng(abs){
-  return normRel(abs);
-}
-function bondOrderChar(order){
-  return order===2?'=':order===3?'~':'-';
-}
-function isAlcoholO(id,atoms,adj){
-  return atoms.element[id-1]===8&&adj[id].some(n=>atoms.element[n-1]===1);
-}
-function isChiralC(id,atoms,adj,hiddenH){
-  if(atoms.element[id-1]!==6) return false;
-  const nbs=adj[id].filter(x=>!hiddenH.has(x));
-  let heavy=0,h=false;
-  for(const x of nbs){if(atoms.element[x-1]===1)h=true;else heavy++;}
-  return heavy>=3&&(heavy+(h?1:0))>=4;
-}
-function wedgePrefix(parent,child,center,xs,ys,adj,atoms,hiddenH){
-  if(!isChiralC(center,atoms,adj,hiddenH)) return '';
-  const others=adj[center].filter(x=>x!==parent&&x!==child&&!hiddenH.has(x));
-  if(!others.length) return '';
-  const cx=xs[center-1],cy=ys[center-1];
-  const v1x=xs[parent-1]-cx,v1y=-(ys[parent-1]-cy);
-  const v2x=xs[child-1]-cx,v2y=-(ys[child-1]-cy);
-  const vrx=xs[others[0]-1]-cx,vry=-(ys[others[0]-1]-cy);
-  const cpBond=v1x*v2y-v1y*v2x,cpRef=v1x*vry-v1y*vrx;
-  if(cpBond*cpRef>0) return '>';
-  if(cpBond*cpRef<0) return '<';
-  return '';
-}
-function bondPrefix(u,v,order,atoms,adj,xs,ys,hiddenH){
-  const bc=bondOrderChar(order);
-  const center=isChiralC(v,atoms,adj,hiddenH)?v:(isChiralC(u,atoms,adj,hiddenH)?u:0);
-  if(!center) return bc;
-  const p=center===v?u:v,c=center===v?v:u;
-  const w=wedgePrefix(p,c,center,xs,ys,adj,atoms,hiddenH);
-  return w||bc;
-}
-
-function coordComplexToChemfig(atoms,bonds,xs,ys,n,adj,bondOrder){
-  let metalId=0,score=0;
-  for(let i=1;i<=n;i++){
-    const z=atoms.element[i-1];
-    if(!isMetalZ(z)) continue;
-    let s=0;
-    for(const nb of adj[i]){
-      const k=Math.min(i,nb)+'_'+Math.max(i,nb);
-      if((bondOrder[k]||1)>=4) s+=2; else s++;
-    }
-    if(s>score){score=s;metalId=i;}
-  }
-  if(!metalId) return '';
-  const ligands=adj[metalId].slice().sort((a,b)=>absAngFrom(metalId,a,xs,ys)-absAngFrom(metalId,b,xs,ys));
-  const bondUsed=new Set();
-  function ligBranch(u,p,inAng){
-    if(atoms.element[u-1]===1) return '';
-    let r=idxToEl(atoms.element[u-1]);
-    const kids=adj[u].filter(v=>v!==p&&!bondUsed.has(Math.min(u,v)+'_'+Math.max(u,v)));
-    kids.sort((a,b)=>normRel(absAngFrom(u,a,xs,ys)-inAng)-normRel(absAngFrom(u,b,xs,ys)-inAng));
-    for(let i=0;i<kids.length;i++){
-      const v=kids[i],abs=absAngFrom(u,v,xs,ys),ang=chemfigAbsAng(abs);
-      const k=Math.min(u,v)+'_'+Math.max(u,v);
-      const bc=bondOrderChar(bondOrder[k]>=4?1:bondOrder[k]);
-      const sub=ligBranch(v,u,abs);
-      if(i===0) r+=bc+'[:'+ang+']'+sub;
-      else r+='('+bc+'[:'+ang+']'+sub+')';
-    }
-    return r;
-  }
-  let body=idxToEl(atoms.element[metalId-1]);
-  if(!ligands.length) return '\\chemfig{'+body+'}';
-  for(let i=0;i<ligands.length;i++){
-    const lid=ligands[i],abs=absAngFrom(metalId,lid,xs,ys);
-    const ang=chemfigAbsAng(abs);
-    bondUsed.add(Math.min(metalId,lid)+'_'+Math.max(metalId,lid));
-    const sub=ligBranch(lid,metalId,abs);
-    if(i===0) body+='-[:'+ang+']'+sub;
-    else body+='(-[:'+ang+']'+sub+')';
-  }
-  const ions=[];
-  for(let i=1;i<=n;i++){
-    if(adj[i].length===0&&isMetalZ(atoms.element[i-1])) ions.push(idxToEl(atoms.element[i-1])+'+');
-  }
-  if(ions.length) body+=' % counter-ions: '+ions.join(', ');
-  return '\\chemfig{'+body+'}';
-}
-
-function getCuratedChemfigSpecialCase({cid,smiles,iupac,formula}){
-  const name=(iupac||'').toLowerCase();
-  const normalizedSmiles=smiles||'';
-  const isMaleicAcid=
-    String(cid)==='444266' ||
-    /maleic acid|cis-but-2-enedioic acid|\(z\)-but-2-enedioic acid/.test(name) ||
-    (formula==='C4H4O4' && /C\(=C[\/\\]C\(=O\)O\)C\(=O\)O/.test(normalizedSmiles));
-  if(isMaleicAcid){
-    return '\\chemfig{OH-[:150,,1](=[:210]O)-[:90]=[:150]-[:210](-[:150,,,2]HO)=[:270]O}';
-  }
-
-  const isSucrose=
-    String(cid)==='5988' ||
-    /sucrose/.test(name) ||
-    (formula==='C12H22O11' && normalizedSmiles.includes('OC[C@H]1O[C@@]'));
-  if(isSucrose){
-    return '\\chemfig{OH>:[:198,,1]-[:252](-[:180]O-[:108](<:[:162]-[:102,,,2]HO)-[:36](-[:324])<[:90,,,1]OH)(-[:342]-[:42,,,1]OH)<:[:270]O>:[:210]-[:150]O-[:210](<[:150]-[:210,,,2]HO)-[:270](<:[:210,,,2]HO)-[:330](<[:270,,,1]OH)-[:30](-[:90])<:[:330,,,1]OH}';
-  }
-
-  const isFerrocyanide=
-    String(cid)==='725' ||
-    /ferrocyanide|hexacyanoferrate\(ii\)|hexacyanoiron/.test(name) ||
-    formula==='C6FeK4N6' || formula==='C6FeN6' ||
-    (normalizedSmiles.includes('[Fe]') && normalizedSmiles.includes('C#N'));
-  if(isFerrocyanide){
-return '\\chemfig{N~[:180]C-[:0]Fe(-[:60]C~[:60]N)(-[:120]C~[:120]N)(-[:180]C~[:180]N)(-[:240]C~[:240]N)(-[:300]C~[:300]N)}(+4 K^{+})';
-  }
-
-  const isHexammineCobalt=
-    String(cid)==='159295' ||
-    /hexamminecobalt|hexaaminecobalt|\[co\(nh3\)6\]/.test(name) ||
-    normalizedSmiles==='N.N.N.N.N.N.[Cl-].[Cl-].[Cl-].[Co+3]';
-  if(isHexammineCobalt){
-return '\\chemfig{Co(-[:0]NH_3)...(3Cl^-)}';  }
-
-  return null;
-}
-
-function pubchem2DFromCompound(c,smiles){
-  const atoms=c.atoms,bonds=c.bonds;
-  const conf=c.coords[0].conformers[0];
-  const xs=conf.x,ys=conf.y;
-  const n=atoms.aid.length;
-  const adj=Array.from({length:n+1},()=>[]);
-  const bondOrder={};
-  for(let i=0;i<bonds.aid1.length;i++){
-    const u=bonds.aid1[i],v=bonds.aid2[i];
-    adj[u].push(v);adj[v].push(u);
-    bondOrder[Math.min(u,v)+'_'+Math.max(u,v)]=bonds.order[i];
-  }
-  if(isCoordinationCompound(atoms,bonds,smiles)){
-    return coordComplexToChemfig(atoms,bonds,xs,ys,n,adj,bondOrder);
-  }
-  const bondType={};
-  for(const[k,o]of Object.entries(bondOrder)){
-    bondType[k]=bondOrderChar(o>=4?1:o);
-  }
-  const isHeavy=new Array(n+1).fill(false);
-  for(let i=1;i<=n;i++){if(atoms.element[i-1]!==1)isHeavy[i]=true;}
-  const heavyAdj=Array.from({length:n+1},()=>[]);
-  const heavyDegree=new Array(n+1).fill(0);
-  for(let i=0;i<bonds.aid1.length;i++){
-    const u=bonds.aid1[i],v=bonds.aid2[i];
-    if(isHeavy[u]&&isHeavy[v]){heavyAdj[u].push(v);heavyAdj[v].push(u);heavyDegree[u]++;heavyDegree[v]++;}
-  }
-  const ringAtoms=new Set();
-  for(let i=0;i<bonds.aid1.length;i++){
-    const u=bonds.aid1[i],v=bonds.aid2[i];
-    if(!isHeavy[u]||!isHeavy[v]) continue;
-    const path=_shortestPath(heavyAdj,u,v,u+'_'+v);
-    if(path){ringAtoms.add(u);ringAtoms.add(v);for(const a of path)ringAtoms.add(a);}
-  }
-  const bridgeAdjacent=new Set();
-  for(const ra of ringAtoms){
-    for(const nb of adj[ra]){
-      if(!ringAtoms.has(nb)&&isHeavy[nb]){
-        for(const nb2 of adj[nb]){if(nb2!==ra&&ringAtoms.has(nb2)){bridgeAdjacent.add(ra);break;}}
-      }
-    }
-  }
-  const distToBA=new Array(n+1).fill(Infinity);
-  if(bridgeAdjacent.size>0){
-    for(let i=1;i<=n;i++){
-      if(!isHeavy[i]) continue;
-      if(bridgeAdjacent.has(i)){distToBA[i]=0;continue;}
-      const v=new Set([i]),q=[[i,0]];
-      while(q.length){
-        const[u,d]=q.shift();
-        if(bridgeAdjacent.has(u)){distToBA[i]=d;break;}
-        for(const w of heavyAdj[u]){if(!v.has(w)){v.add(w);q.push([w,d+1]);}}
-      }
-    }
-  }
-  const dfsVisited=new Set();
-  let mainChain=[];
-  function dfsLong(at,path){
-    dfsVisited.add(at);path.push(at);
-    if(path.length>mainChain.length)mainChain=[...path];
-    const hasBA=heavyAdj[at].some(nb=>!dfsVisited.has(nb)&&bridgeAdjacent.has(nb));
-    const neighbors=[...heavyAdj[at]];
-    neighbors.sort((a,b)=>{
-      const aR=ringAtoms.has(a)?0:1,bR=ringAtoms.has(b)?0:1;
-      if(aR!==bR) return aR-bR;
-      const aE=heavyDegree[a]===1?1:0,bE=heavyDegree[b]===1?1:0;
-      if(aE!==bE) return aE-bE;
-      if(heavyDegree[a]!==heavyDegree[b]) return heavyDegree[a]-heavyDegree[b];
-      return adj[b].filter(nb=>!ringAtoms.has(nb)&&isHeavy[nb]).length-adj[a].filter(nb=>!ringAtoms.has(nb)&&isHeavy[nb]).length;
-    });
-    for(const nb of neighbors){
-      if(dfsVisited.has(nb)) continue;
-      if(hasBA&&ringAtoms.has(at)&&ringAtoms.has(nb)&&!bridgeAdjacent.has(nb)) continue;
-      dfsLong(nb,path);
-    }
-    path.pop();dfsVisited.delete(at);
-  }
-  const heavyEndpoints=[];
-  for(let i=1;i<=n;i++){if(isHeavy[i]&&heavyDegree[i]===1)heavyEndpoints.push(i);}
-  const alcoholStarts=heavyEndpoints.filter(ep=>isAlcoholO(ep,atoms,adj));
-  let starts=alcoholStarts.length?alcoholStarts.slice():heavyEndpoints.slice();
-  if(bridgeAdjacent.size>0&&starts.length>1){
-    let minDist=Infinity;
-    for(const ep of starts){if(distToBA[ep]<minDist)minDist=distToBA[ep];}
-    starts=starts.filter(ep=>distToBA[ep]===minDist);
-  }
-  starts.sort((a,b)=>a-b);
-  if(!starts.length){for(const ra of ringAtoms)starts.push(ra);}
-  if(!starts.length)starts.push(1);
-  for(const s of starts)dfsLong(s,[]);
-  const parent=new Array(n+1).fill(0);
-  const treeKids=Array.from({length:n+1},()=>[]);
-  for(let i=0;i<mainChain.length-1;i++){
-    const u=mainChain[i],v=mainChain[i+1];
-    parent[v]=u;treeKids[u].push(v);
-  }
-  const bfsQ=[...mainChain],bfsVisited=new Set(mainChain);
-  while(bfsQ.length){
-    const u=bfsQ.shift();
-    for(const v of adj[u]){
-      if(!bfsVisited.has(v)){bfsVisited.add(v);parent[v]=u;treeKids[u].push(v);bfsQ.push(v);}
-    }
-  }
-  const mergedH={},hiddenH=new Set();
-  for(let i=1;i<=n;i++){
-    if(atoms.element[i-1]!==1||adj[i].length!==1) continue;
-    const p=adj[i][0],pEl=atoms.element[p-1];
-    if(pEl===6){hiddenH.add(i);treeKids[p]=treeKids[p].filter(c=>c!==i);}
-    else if(pEl===8){
-      const hKids=treeKids[p].filter(c=>atoms.element[c-1]===1);
-      if(hKids.length===1&&hKids[0]===i){
-        const ohAbs=absAngFrom(p,i,xs,ys),oPar=parent[p];
-        let rel;
-        if(oPar){rel=((ohAbs-absAngFrom(oPar,p,xs,ys))%360+360)%360;}
-        else{rel=((ohAbs%360)+360)%360;}
-        const heavyKids=treeKids[p].filter(c=>atoms.element[c-1]!==1);
-        if(heavyKids.length===0){
-          mergedH[p]={text:'HO',pos:2};
-        }else{
-          mergedH[p]={text:'OH',pos:1};
-        }
-        treeKids[p]=treeKids[p].filter(c=>c!==i);
-      }
-    }
-  }
-  const ringMap={};let ri=0;
-  for(let i=0;i<bonds.aid1.length;i++){
-    const u=bonds.aid1[i],v=bonds.aid2[i];
-    if(parent[u]!==v&&parent[v]!==u){
-      const k=Math.min(u,v)+'_'+Math.max(u,v);
-      if(!ringMap[k])ringMap[k]={label:'r'+(++ri),u,v};
-    }
-  }
-  const vRings={};
-  for(const info of Object.values(ringMap)){
-    if(!vRings[info.u])vRings[info.u]=[];
-    vRings[info.u].push({label:info.label});
-    if(!vRings[info.v])vRings[info.v]=[];
-    vRings[info.v].push({label:info.label});
-  }
-  let root=mainChain[0];
-  const alcRoot=mainChain.filter(id=>mergedH[id]&&treeKids[id].some(c=>atoms.element[c-1]!==1));
-  if(alcRoot.length) root=alcRoot.sort((a,b)=>a-b)[0];
-  else{
-    for(const id of mainChain){if(mergedH[id]){root=id;break;}}
-  }
-  const nextInChain={};
-  if(mainChain[mainChain.length-1]===root&&mainChain.length>1){
-    for(let i=mainChain.length-1;i>0;i--)nextInChain[mainChain[i]]=mainChain[i-1];
-  }else{
-    for(let i=0;i<mainChain.length-1;i++)nextInChain[mainChain[i]]=mainChain[i+1];
-    if(mainChain[0]!==root){
-      const hc=treeKids[root].find(c=>atoms.element[c-1]!==1);
-      if(hc) nextInChain[root]=hc;
-    }
-  }
-  function dfs(u,p,inAng){
-    if(hiddenH.has(u)) return '';
-    let r=mergedH[u]?mergedH[u].text:idxToEl(atoms.element[u-1]);
-    if(vRings[u]){for(const ri of vRings[u])r+='?['+ri.label+']';}
-    const kids=treeKids[u].filter(c=>c!==p);
-    if(!kids.length) return r;
-    const next=nextInChain[u];
-    kids.sort((a,b)=>{
-      if(a===next) return -1;
-      if(b===next) return 1;
-      return normRel(inAng-absAngFrom(u,a,xs,ys))-normRel(inAng-absAngFrom(u,b,xs,ys));
-    });
-    for(let i=0;i<kids.length;i++){
-      const v=kids[i],abs=absAngFrom(u,v,xs,ys),ang=chemfigAbsAng(abs);
-      const k=Math.min(u,v)+'_'+Math.max(u,v);
-      let bc=bondPrefix(u,v,bondOrder[k]||1,atoms,adj,xs,ys,hiddenH);
-      if(!bc) bc=bondType[k]||'-';
-      let posPart='';
-      if(i===0&&mergedH[u]) posPart=',,'+mergedH[u].pos;
-      else if(mergedH[v]) posPart=',,,'+mergedH[v].pos;
-      const childStr=dfs(v,u,abs);
-      if(i===0) r+=bc+'[:'+ang+posPart+']'+childStr;
-      else r+='('+bc+'[:'+ang+posPart+']'+childStr+')';
-    }
-    return r;
-  }
-  return '\\chemfig{'+dfs(root,0,0)+'}';
-}
-
-async function pubchem2DToChemfig(cid,smiles){
-  const c=await fetchPubChem2D(cid);
-  return pubchem2DFromCompound(c,smiles||'');
-}
-
-// === Generic coordination compound SVG renderer ===
-// For fragmented SMILES like N.N.N.N.N.N.[Cl-].[Cl-].[Cl-].[Co+3] where PubChem
-// stores no bond info, extract metal+ligands+counters and draw a geometry-aware
-// schematic. Covers middle-school coordination examples:
-//   [Co(NH3)6]Cl3, K4[Fe(CN)6], K3[Fe(CN)6], [Ag(NH3)2]+, [Cu(NH3)4]2+,
-//   [Zn(NH3)4]2+, [Ni(NH3)6]2+, K2[PtCl4], K2[PtCl6], K2[HgI4],
-//   K[Al(OH)4], [CoCl4]2-, [Cr(H2O)6]3+, [Fe(H2O)6]3+, etc.
+// === 配位化合物 SVG 示意圖（碎片化 SMILES，如 [Co(NH3)6]Cl3）===
 const COORD_METAL_SYMBOLS=new Set(['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','La','Ce','Pr','Nd','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Al','Ga','In','Sn','Sb']);
+
 const COORD_ALKALI=new Set(['Li','Na','K','Rb','Cs','Mg','Ca','Sr','Ba']);
+
 const EXPECTED_CN={'Co-3':6,'Co-2':6,'Fe-2':6,'Fe-3':6,'Cu-2':4,'Cu-1':2,'Ag-1':2,'Zn-2':4,'Ni-2':6,'Pt-2':4,'Pt-4':6,'Hg-2':4,'Cr-3':6,'Cr-2':6,'Al-3':4,'Mn-2':6,'Au-1':2,'Au-3':4,'Pd-2':4};
+
 const GEOMETRY_TABLE={'Co-3-6':'octahedral','Co-2-6':'octahedral','Co-2-4':'tetrahedral','Fe-2-6':'octahedral','Fe-3-6':'octahedral','Cu-2-4':'square_planar','Cu-2-6':'octahedral','Cu-1-2':'linear','Ag-1-2':'linear','Zn-2-4':'tetrahedral','Zn-2-6':'octahedral','Ni-2-6':'octahedral','Ni-2-4':'square_planar','Pt-2-4':'square_planar','Pt-4-6':'octahedral','Hg-2-4':'tetrahedral','Hg-2-2':'linear','Cr-3-6':'octahedral','Cr-2-6':'octahedral','Al-3-4':'tetrahedral','Al-3-6':'octahedral','Mn-2-6':'octahedral','Au-1-2':'linear','Au-3-4':'square_planar','Pd-2-4':'square_planar'};
 
 function parseFragmentedSmiles(smiles){
@@ -558,25 +203,6 @@ function getCoordinationSpecialCase({cid,smiles,iupac,formula}){
   };
 }
 
-function coordComplexChemfig(spec){
-  const anglesByGeometry={linear:[0,180],square_planar:[0,90,180,270],tetrahedral:[0,90,180,270],octahedral:[0,60,120,180,240,300]};
-  const angles=anglesByGeometry[spec.predictedGeometry]||[];
-  const ligands=spec.ligands;
-  const n=Math.min(angles.length,ligands.length);
-  let body=spec.metal;
-  for(let i=0;i<n;i++){
-    const ang=angles[i];
-    const lig=ligands[i].replace(/\u2083/g,'_3').replace(/\u2082/g,'_2').replace(/\u207B/g,'^-').replace(/\u207A/g,'^+');
-    body+=`(-[:${ang}]${lig})`;
-  }
-  let result=`\\chemfig{${body}}`;
-  if(spec.counterIons.length){
-    const counters=spec.counterIons.map(c=>c.replace(/\u207B/g,'^-').replace(/\u207A/g,'^+')).join('\\quad ');
-    result+=`\\quad ${counters}`;
-  }
-  return result;
-}
-
 function renderCoordinationSvg(spec){
   const cx=318, cy=240;
   const geometry=spec.predictedGeometry;
@@ -666,109 +292,6 @@ const pngUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG
   });
 }
 
-async function fetchPubChem2D(cid){
-  const r=await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+cid+'/JSON?record_type=2d');
-  if(!r.ok) throw new Error('PubChem 2D API 失敗');
-  return (await r.json()).PC_Compounds[0];
-}
-
-function treeToChemfig(tree){
-  const V=tree.vertices, E=tree.edges;
-  if(!V.length) return '';
-
-  // 找出 ring-closing edges（不在 spanning tree 裡的邊）
-  const ringMap={}; let ri=0;
-  for(const e of E){
-    const sv=V[e.sourceId], tv=V[e.targetId];
-    const isTree=sv.parentVertexId===tv.id||tv.parentVertexId===sv.id||
-                 sv.spanningTreeChildren.includes(tv.id)||tv.spanningTreeChildren.includes(sv.id);
-    if(!isTree){
-      const k=Math.min(e.sourceId,e.targetId)+'_'+Math.max(e.sourceId,e.targetId);
-      if(!ringMap[k]){ ringMap[k]={e:e, label:'r'+(++ri)}; }
-    }
-  }
-
-  // 每個 vertex 上有哪些 ring label
-  const vRings={};
-  for(const[k,info] of Object.entries(ringMap)){
-    const s=info.e.sourceId, t=info.e.targetId;
-    if(!vRings[s]) vRings[s]=[]; vRings[s].push({target:t,label:info.label,edge:info.e});
-    if(!vRings[t]) vRings[t]=[]; vRings[t].push({target:s,label:info.label,edge:info.e});
-  }
-
-  const visited=new Set();
-
-  function dfs(vid,pid,incomingAngle){
-    const v=V[vid]; visited.add(vid);
-    let r='';
-    const el=v.value.element;
-
-    // 非 H 才寫元素，或是唯一原子
-    const heavy=V.filter(x=>x.value.element!=='H').length;
-    if(el!=='H'||heavy===0) r+=el;
-
-    // Ring markers — both ends get ?[label]
-    if(vRings[vid]){
-      for(const ri of vRings[vid]){
-        r+='?['+ri.label+']';
-      }
-    }
-
-    // spanning tree children，排除 parent
-    const kids=v.spanningTreeChildren.filter(c=>c!==pid);
-    if(!kids.length) return r;
-
-    // 排序：把非 H 放前面、main chain 優先
-    kids.sort((a,b)=>{
-      const va=V[a], vb=V[b];
-      if(va.value.element==='H'&&vb.value.element!=='H') return 1;
-      if(vb.value.element==='H'&&va.value.element!=='H') return -1;
-      return (va.value.smilesOrder||0) - (vb.value.smilesOrder||0);
-    });
-
-    for(let i=0;i<kids.length;i++){
-      const cid=kids[i], cv=V[cid];
-      // absolute angle from SmilesDrawer coords (y↓→y↑ flip)
-      const absAng=-Math.atan2(cv.position.y-v.position.y,cv.position.x-v.position.x)*180/Math.PI;
-      // [:angle] is an absolute chemfig direction.
-      const outAng=chemfigAbsAng(absAng);
-      const e=tree.getEdge(vid,cid);
-      const bt=e?e.bondType:'-';
-      const bc=bt==='='?'=':bt==='#'?'~':'';
-      const dir='[:'+outAng+']';
-      const childStr=dfs(cid,vid,absAng);
-      if(i===0) r+=bc+dir+childStr;
-      else r+='('+bc+dir+childStr+')';
-    }
-    return r;
-  }
-
-  const root=V.find(v=>v.parentVertexId===null);
-  if(!root) return '';
-  return '\\chemfig{'+dfs(root.id,null,0)+'}';
-}
-
-// Phase A: shortest-path helper (edge-excluded BFS)
-function _shortestPath(adj, start, end, blockedEdge) {
-  const parent = {}; const visited = new Set([start]); const q = [start]; parent[start] = 0;
-  while (q.length) {
-    const u = q.shift();
-    if (u === end) {
-      const path = [];
-      let cur = end;
-      while (parent[cur] !== 0) { cur = parent[cur]; if (cur !== start) path.unshift(cur); }
-      return path;
-    }
-    for (const v of adj[u]) {
-      const ek = u + '_' + v;
-      if (!visited.has(v) && ek !== blockedEdge && v + '_' + u !== blockedEdge) {
-        visited.add(v); parent[v] = u; q.push(v);
-      }
-    }
-  }
-  return null;
-}
-
 async function pubchemFetch(name){
   const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(name)}/property/IsomericSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
   if(!r.ok) return null;
@@ -776,11 +299,7 @@ async function pubchemFetch(name){
   return d.PropertyTable.Properties[0];
 }
 
-// === Protein fallback ===
-// When PubChem returns 404 (e.g. for actin, hemoglobin, insulin ...),
-// try UniProt by protein_name. Returns up to `limit` entries with
-// {accession, name, organism, gene, pdbIds:[...], reviewed:bool}.
-// Each entry is linkable to UniProt, RCSB PDB (first structure), and AlphaFold.
+// === 蛋白質後備查詢：PubChem 查不到時改查 UniProt（actin / hemoglobin ...）===
 async function uniprotSearch(name,limit=3){
   if(!name) return [];
   try{
@@ -813,7 +332,6 @@ async function uniprotSearch(name,limit=3){
   }catch(e){return [];}
 }
 
-// Render the protein card HTML (used in setStatus)
 function renderProteinCard(query,entries){
   const reviewedCount=entries.filter(e=>e.reviewed).length;
   let html=step('直接查詢','fail')+step('維基','fail')+step('翻譯查詢','done');
@@ -856,7 +374,6 @@ async function pubchemFetchByCid(cid){
   return p;
 }
 
-// 標籤常用名 → PubChem 可查英文名（維基/opensearch 無結果時的補充）
 const ZH_ALIASES={
   '苯':'benzene',
   '蔗糖':'sucrose',
@@ -905,7 +422,6 @@ function isExactWikiTitle(query,title){
   return normalizeLookupTitle(query)===normalizeLookupTitle(title);
 }
 
-// 維基中文：只接受精確條目，避免 opensearch 把血紅素誤配成血清素等相似名
 async function wikiZhLookup(query){
   const qr=await fetch('https://zh.wikipedia.org/w/api.php?action=query&redirects=1&prop=langlinks|pageprops&ppprop=wikibase_item&lllang=en&titles='+encodeURIComponent(query)+'&format=json&origin=*');
   if(!qr.ok) return null;
@@ -1047,7 +563,6 @@ async function run(){
 
   const {CID,IsomericSMILES,SMILES:canonicalSMILES,MolecularFormula:formula,MolecularWeight:mw,IUPACName:iupac}=props;
   const smiles=IsomericSMILES||canonicalSMILES||'';
-  const chemfigSpecial=getCuratedChemfigSpecialCase({cid:CID,smiles,iupac,formula});
   const coordSpecial=getCoordinationSpecialCase({cid:CID,smiles,iupac,formula});
   const mhchemDisplay=coordSpecial?coordSpecial.formulaTex:formula;
 
@@ -1109,6 +624,7 @@ async function run(){
 
   // 2D-only mode: chemfig generation removed
 }
+
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
 </script>
 </body></html>
