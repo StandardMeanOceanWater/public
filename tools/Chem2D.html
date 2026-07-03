@@ -52,9 +52,11 @@
   <span class="tag" onclick="go(&#39;血紅素&#39;)">血紅素</span>
   <span class="tag" onclick="go(&#39;青黴素&#39;)">青黴素</span>
   <span class="tag" onclick="go(&#39;順丁烯二酸&#39;)">順丁烯二酸/馬來酸</span>
+  <span class="tag" onclick="go(&#39;反丁烯二酸&#39;)">反丁烯二酸/富馬酸</span>
   <span class="tag" onclick="go(&#39;乙二胺四乙酸&#39;)">乙二胺四乙酸(EDTA)</span>
   <span class="tag" onclick="go(&#39;三氯化六氨合鈷&#39;)">三氯化六氨合鈷/無機黃鈷鹽</span>
   <span class="tag" onclick="go(&#39;亞鐵氰化鉀&#39;)">亞鐵氰化鉀酸/黃血鹽</span>
+  <span class="tag" onclick="go(&#39;赤血鹽&#39;)">赤血鹽/鐵氰化鉀</span>
 </div>
 
 <div style="font-size:13px;margin-bottom:.75rem"><a href="ChemLatex.html" style="color:var(--color-text-info)">需要 LaTeX / chemfig 輸入請點此</a></div>
@@ -92,19 +94,31 @@ function setStatus(html,isErr){
 
 function step(label,state){return`<span class="step ${state}">${label}</span>`;}
 
-function smilesNeedsPubChem2D(smiles){
-  if(!smiles||!smiles.includes('.')) return false;
-  return /\[(?:Fe|Co|Ni|Cu|Zn|Mn|Cr|Pt|Pd|Au|Ag|Hg|Ru|Rh|Ir|Os|Re|Mo|W|V|Ti|Sc|La|Ce|K\+|Na\+|Li\+|Ca\+|Mg\+)/i.test(smiles);
-}
-
 // === 配位化合物 SVG 示意圖（碎片化 SMILES，如 [Co(NH3)6]Cl3）===
 const COORD_METAL_SYMBOLS=new Set(['Sc','Ti','V','Cr','Mn','Fe','Co','Ni','Cu','Zn','Y','Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','La','Ce','Pr','Nd','Sm','Eu','Gd','Tb','Dy','Ho','Er','Tm','Yb','Lu','Hf','Ta','W','Re','Os','Ir','Pt','Au','Hg','Tl','Pb','Bi','Al','Ga','In','Sn','Sb']);
 
 const COORD_ALKALI=new Set(['Li','Na','K','Rb','Cs','Mg','Ca','Sr','Ba']);
 
+// 偵測碎片化 SMILES 是否含金屬（中心金屬＋鹼/鹼土金屬），含則改用 PubChem PNG 繪圖。
+// 金屬清單以上方兩個 Set 為唯一來源，正則自動產生，避免同一份名單維護兩處。
+// 依符號長度排序讓雙字母符號（如 Sc、Na）優先匹配；大小寫敏感符合 SMILES 元素符號規範。
+const METAL_DETECT_RE=new RegExp('\\[(?:'+[...COORD_METAL_SYMBOLS,...COORD_ALKALI].sort((a,b)=>b.length-a.length).join('|')+')');
+function smilesNeedsPubChem2D(smiles){
+  if(!smiles||!smiles.includes('.')) return false;
+  return METAL_DETECT_RE.test(smiles);
+}
+
 const EXPECTED_CN={'Co-3':6,'Co-2':6,'Fe-2':6,'Fe-3':6,'Cu-2':4,'Cu-1':2,'Ag-1':2,'Zn-2':4,'Ni-2':6,'Pt-2':4,'Pt-4':6,'Hg-2':4,'Cr-3':6,'Cr-2':6,'Al-3':4,'Mn-2':6,'Au-1':2,'Au-3':4,'Pd-2':4};
 
 const GEOMETRY_TABLE={'Co-3-6':'octahedral','Co-2-6':'octahedral','Co-2-4':'tetrahedral','Fe-2-6':'octahedral','Fe-3-6':'octahedral','Cu-2-4':'square_planar','Cu-2-6':'octahedral','Cu-1-2':'linear','Ag-1-2':'linear','Zn-2-4':'tetrahedral','Zn-2-6':'octahedral','Ni-2-6':'octahedral','Ni-2-4':'square_planar','Pt-2-4':'square_planar','Pt-4-6':'octahedral','Hg-2-4':'tetrahedral','Hg-2-2':'linear','Cr-3-6':'octahedral','Cr-2-6':'octahedral','Al-3-4':'tetrahedral','Al-3-6':'octahedral','Mn-2-6':'octahedral','Au-1-2':'linear','Au-3-4':'square_planar','Pd-2-4':'square_planar'};
+
+// 電荷數轉上標離子符號：+1→⁺、+2→²⁺、+3→³⁺、-1→⁻、-2→²⁻
+function chargeSup(charge){
+  const sup={'1':'\u00B9','2':'\u00B2','3':'\u00B3','4':'\u2074','5':'\u2075','6':'\u2076','7':'\u2077','8':'\u2078','9':'\u2079'};
+  const n=Math.abs(charge);
+  const digits=n>1?String(n).split('').map(d=>sup[d]||'').join(''):'';
+  return digits+(charge>0?'\u207A':'\u207B');
+}
 
 function parseFragmentedSmiles(smiles){
   if(!smiles||!smiles.includes('.')) return null;
@@ -117,16 +131,16 @@ function parseFragmentedSmiles(smiles){
       const sym=m[1];
       let cs=m[2]; if(cs==='+'||cs==='-'||cs==='') cs=(cs||'+')+'1';
       const charge=parseInt(cs);
-      if(COORD_ALKALI.has(sym)&&charge>0){ cationCounters.push({raw:p,symbol:sym,charge}); }
+      if(COORD_ALKALI.has(sym)&&charge>0){ cationCounters.push({raw:p,symbol:sym+chargeSup(charge),charge}); }
       else if(COORD_METAL_SYMBOLS.has(sym)&&charge>0){
         if(!metal){ metal={symbol:sym,os:charge}; }
         else if(charge>metal.os){
-          cationCounters.push({raw:`[${metal.symbol}+${metal.os}]`,symbol:metal.symbol,charge:metal.os});
+          cationCounters.push({raw:`[${metal.symbol}+${metal.os}]`,symbol:metal.symbol+chargeSup(metal.os),charge:metal.os});
           metal={symbol:sym,os:charge};
-        } else { cationCounters.push({raw:p,symbol:sym,charge}); }
+        } else { cationCounters.push({raw:p,symbol:sym+chargeSup(charge),charge}); }
       }
       else if(charge<0){ anionicFragments.push({raw:p,name:sym+'\u207B',charge}); }
-      else if(sym==='NH4'&&charge>0){ cationCounters.push({raw:p,symbol:'NH\u2084',charge}); }
+      else if(sym==='NH4'&&charge>0){ cationCounters.push({raw:p,symbol:'NH\u2084'+chargeSup(charge),charge}); }
       else { unknownFragments.push(p); }
       continue;
     }
@@ -183,7 +197,7 @@ function getCoordinationSpecialCase({cid,smiles,iupac,formula}){
   const counterCounts={};
   for(const c of parsed.counterIons){ counterCounts[c]=(counterCounts[c]||0)+1; }
   const counterStr=Object.entries(counterCounts).map(([c,n])=>{
-    return c.replace(/[\u207B\u207A-]/g,'')+(n>1?n:'');
+    return c.replace(/[\u00B9\u00B2\u00B3\u2070\u2074-\u2079\u207A\u207B-]/g,'')+(n>1?n:'');
   }).join('');
   const complexTex=`[${parsed.metal}${ligTex}]${chargeSuffix}`;
   let formulaTex;
@@ -267,10 +281,14 @@ function renderCoordinationSvg(spec){
   </div>`;
 }
 
+// SMILES 含順反(cis/trans)立體標記（/ 或 \）時，SmilesDrawer 的版面常與課本/PubChem 相反，
+// 改用 PubChem 標準 2D 描繪，確保順反丁烯二酸等幾何異構畫得正確。
+function smilesHasCisTrans(smiles){ return /[\/\\]/.test(smiles||''); }
+
 function render2DStructure(CID,smiles){
   const wrap=document.getElementById('canvas-wrap');
-const pngUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG?image_size=600x600';
-  if(smilesNeedsPubChem2D(smiles)){
+  const pngUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG?image_size=600x600';
+  if(smilesNeedsPubChem2D(smiles)||smilesHasCisTrans(smiles)){
     wrap.innerHTML='<img src="'+pngUrl+'" style="max-width:100%;max-height:750px" alt="2D 結構式"/>';
     return;
   }
@@ -380,13 +398,17 @@ const ZH_ALIASES={
   '青黴素':'penicillin G',
   '順丁烯二酸':'maleic acid',
   '馬來酸':'maleic acid',
+  '反丁烯二酸':'fumaric acid',
+  '富馬酸':'fumaric acid',
   '乙二胺四乙酸':'edetic acid',
   'EDTA':'edetic acid',
   '三氯化六氨合鈷':'Hexamminecobalt(III) chloride',
   '無機黃鈷鹽':'Hexamminecobalt(III) chloride',
   '亞鐵氰化鉀':'potassium ferrocyanide',
   '亞鐵氰化鉀酸':'potassium ferrocyanide',
-  '黃血鹽':'potassium ferrocyanide'
+  '黃血鹽':'potassium ferrocyanide',
+  '赤血鹽':'potassium ferricyanide',
+  '鐵氰化鉀':'potassium ferricyanide'
 };
 
 const EN_ALIASES={
