@@ -237,35 +237,6 @@ function coordComplexToChemfig(atoms,bonds,xs,ys,n,adj,bondOrder){
   return '\\chemfig{'+body+'}';
 }
 
-function getCuratedChemfigSpecialCase({cid,smiles,iupac,formula}){
-  const name=(iupac||'').toLowerCase();
-  const normalizedSmiles=smiles||'';
-  const isMaleicAcid=
-    String(cid)==='444266' ||
-    /maleic acid|cis-but-2-enedioic acid|\(z\)-but-2-enedioic acid/.test(name) ||
-    (formula==='C4H4O4' && /C\(=C[\/\\]C\(=O\)O\)C\(=O\)O/.test(normalizedSmiles));
-  if(isMaleicAcid){
-    return '\\chemfig{OH-[:150,,1](=[:210]O)-[:90]=[:150]-[:210](-[:150,,,2]HO)=[:270]O}';
-  }
-
-  const isFerrocyanide=
-    String(cid)==='725' ||
-    /ferrocyanide|hexacyanoferrate\(ii\)|hexacyanoiron/.test(name) ||
-    formula==='C6FeK4N6' || formula==='C6FeN6' ||
-    (normalizedSmiles.includes('[Fe]') && normalizedSmiles.includes('C#N'));
-  if(isFerrocyanide){
-return '\\chemfig{N~[:0]C-[:0]Fe(-[:90]C~[:90]N)(-[:30]C~[:30]N)(-[:0]C~[:0]N)(-[:210]C~[:210]N)(-[:270]C~[:270]N)}$+^{4-}  + 4 K^{+}$';  }
-
-  const isHexammineCobalt=
-    String(cid)==='159295' ||
-    /hexamminecobalt|hexaaminecobalt|\[co\(nh3\)6\]/.test(name) ||
-    normalizedSmiles==='N.N.N.N.N.N.[Cl-].[Cl-].[Cl-].[Co+3]';
-  if(isHexammineCobalt){
-return '\\chemfig{Co(-[:0]NH_3)(-[:90]NH_3)(-[:30]NH_3)(-[:180]NH_3)(-[:270]NH_3)(-[:210]NH_3)} $3^{+} +   3 {Cl}^{-}$';  }
-
-  return null;
-}
-
 function pubchem2DFromCompound(c,smiles){
   const atoms=c.atoms,bonds=c.bonds;
   const conf=c.coords[0].conformers[0];
@@ -640,7 +611,11 @@ const ZH_ALIASES={
   '無機黃鈷鹽':'Hexamminecobalt(III) chloride',
   '亞鐵氰化鉀':'potassium ferrocyanide',
   '亞鐵氰化鉀酸':'potassium ferrocyanide',
-  '黃血鹽':'potassium ferrocyanide'
+  '黃血鹽':'potassium ferrocyanide',
+  '赤血鹽':'potassium ferricyanide',
+  '鐵氰化鉀':'potassium ferricyanide',
+  '富馬酸':'fumaric acid',
+  '反丁烯二酸':'fumaric acid'
 };
 
 const EN_ALIASES={
@@ -789,7 +764,6 @@ async function run(){
 
   const {CID,IsomericSMILES,SMILES:canonicalSMILES,MolecularFormula:formula,MolecularWeight:mw,IUPACName:iupac}=props;
   const smiles=IsomericSMILES||canonicalSMILES||'';
-  const chemfigSpecial=getCuratedChemfigSpecialCase({cid:CID,smiles,iupac,formula});
   const coordSpecial=getCoordinationSpecialCase({cid:CID,smiles,iupac,formula});
   const mhchemDisplay=coordSpecial?coordSpecial.formulaTex:formula;
 
@@ -841,8 +815,8 @@ async function run(){
 
   const fbWarn3=document.getElementById('fallback-warning');
   try{
-    var usedAutoGen=!chemfigSpecial&&!coordSpecial;
-    var cf=chemfigSpecial||(coordSpecial?coordComplexChemfig(coordSpecial):await pubchem2DToChemfig(CID,smiles));
+    var usedAutoGen=!coordSpecial;
+    var cf=(coordSpecial?coordComplexChemfig(coordSpecial):await pubchem2DToChemfig(CID,smiles));
     document.getElementById('chemfig-auto').textContent=cf||'';
     document.getElementById('chemfig-inline').textContent=cf||'\\chemfig{ ... }';
     document.getElementById('chemfig-version').textContent='['+CHEMFIG_VERSION+']';
@@ -1034,7 +1008,7 @@ const MOLECULE_DB=[
 {"category":"Biomolecule","name":"丙酮酸","en":"Pyruvic acid","cid":"1060","formula":"C3H4O3","mw":"88.06","iupac":"2-oxopropanoic acid","smiles":"CC(=O)C(=O)O","chemfig":"\\chemfig{O=[:90](-[:150](-[:150,0.62]H)(-[:240,0.62]H)-[:60,0.62]H)-[:30]( =[:90]O)-[:330]O-[:30,0.62]H}"},
 {"category":"Biomolecule","name":"草醯乙酸","en":"Oxaloacetic acid","cid":"970","formula":"C4H4O5","mw":"132.07","iupac":"2-oxobutanedioic acid","smiles":"C(C(=O)C(=O)O)C(=O)O","chemfig":"\\chemfig{O=[:90](-[:30](=[:90]O)-[:330]O-[:30,0.62]H)-[:150](-[:50,0.62]H)( -[:130,0.62]H)-[:210](=[:270]O)-[:150]O-[:210,0.62]H}"},
 {"category":"Biomolecule","name":"蘋果酸","en":"Malic acid","cid":"525","formula":"C4H6O5","mw":"134.09","iupac":"2-hydroxybutanedioic acid","smiles":"C(C(C(=O)O)O)C(=O)O","chemfig":"\\chemfig{O=[:270](-[:330]O-[:30,0.62]H)-[:210](-[:270]O-[:210,0.62]H)( -[:330,0.62]H)-[:150](-[:50,0.62]H)(-[:130,0.62]H)-[:210](=[:270]O)-[:150]O -[:210,0.62]H}"},
-{"category":"Biomolecule","name":"延胡索酸","en":"Fumaric acid","cid":"444972","formula":"C4H4O4","mw":"116.07","iupac":"(E)-but-2-enedioic acid","smiles":"C(=C/C(=O)O)\\C(=O)O","chemfig":"\\chemfig{O=[:270](-[:330]O-[:30,0.62]H)-[:210](-[:270,0.62]H)=[:150]( -[:90,0.62]H)-[:210](=[:270]O)-[:150]O-[:210,0.62]H}"},
+{"category":"Biomolecule","name":"延胡索酸","en":"Fumaric acid","cid":"444972","formula":"C4H4O4","mw":"116.07","iupac":"(E)-but-2-enedioic acid","smiles":"C(=C/C(=O)O)\\C(=O)O","chemfig":"\\chemfig{C(-[:120]COOH)(-[:240]H)=[:0]C(-[:60]H)(-[:300]COOH)}"},
 {"category":"Biomolecule","name":"琥珀酸","en":"Succinic acid","cid":"1110","formula":"C4H6O4","mw":"118.09","iupac":"butanedioic acid","smiles":"C(CC(=O)O)C(=O)O","chemfig":"\\chemfig{O=[:270](-[:330]O-[:30,0.62]H)-[:210](-[:230,0.62]H)(-[:310,0.62]H )-[:150](-[:50,0.62]H)(-[:130,0.62]H)-[:210](=[:270]O)-[:150]O-[:210,0.62]H }"},
 {"category":"Biomolecule","name":"乙醯輔酶A","en":"Acetyl-CoA","cid":"444493","formula":"C23H38N7O17P3S","mw":"809.6","iupac":"S-[2-[3-[[(2R)-4-[[[(2R,3S,4R,5R)-5-(6-aminopurin-9-yl)-4-hydroxy-3-phosphonooxyoxolan-2-yl]methoxy-hydroxyphosphoryl]oxy-hydroxyphosphoryl]oxy-2-hydroxy-3,3-dimethylbutanoyl]amino]propanoylamino]ethyl] ethanethioate","smiles":"CC(=O)SCCNC(=O)CCNC(=O)[C@@H](C(C)(C)COP(=O)(O)OP(=O)(O)OC[C@@H]1[C@H]([C@H]([C@@H](O1)N2C=NC3=C(N=CN=C32)N)O)OP(=O)(O)O)O","chemfig":"\\chemfig{O=[:5.9]P(-[:95.9]O-[:35.9,0.62]H)(-[:5.9]O-[:305.9,0.62]H) -[:275.9]O>[:215.9](-[:332.9,0.62]H)-[:269.9](<[:323.9]O-[:23.9,0.62]H)( -[:26.9,0.62]H)-[:197.9](<:[:251.9]N-[:197.8,0.994]=^[:150]N-[:210]( -[:150,0.62]H)=^[:270]N-[:330](=^[:30](-[:90])-[:342.2,0.994]N=^[:54,0.994] (-[,0.62]H)-[:126,0.994]\\phantom{N})-[:270]N(-[:330,0.62]H)-[:210,0.62]H)( -[:188.9,0.62]H)-[:125.9]O-[:53.9](-[:341.9])(-[:170.9,0.62]H)<:[:107.9]( -[:7.9,0.62]H)(-[:87.9,0.62]H)-[:167.9]O-[:107.9]P(-[:197.9]O -[:257.9,0.62]H)(=[:17.9]O)-[:107.9]O-[:167.9]P(-[:77.9]O-[:17.9,0.62]H)( =[:257.9]O)-[:167.9]O-[:107.9](-[:7.9,0.62]H)(-[:87.9,0.62]H)-[:167.9]( -[:77.9](-[:77.9,0.62]H)(-[:167.9,0.62]H)-[:347.9,0.62]H)(-[:257.9]( -[:257.9,0.62]H)(-[:347.9,0.62]H)-[:167.9,0.62]H)-[:167.9](<[:227.9]O -[:167.9,0.62]H)(-[:167.9,0.62]H)-[:107.9](=[:47.9]O)-[:167.9]N( -[:227.9,0.62]H)-[:107.9](-[:7.9,0.62]H)(-[:87.9,0.62]H)-[:167.9]( -[:187.9,0.62]H)(-[:267.9,0.62]H)-[:107.9](=[:47.9]O)-[:167.9]N( -[:227.9,0.62]H)-[:107.9](-[:7.9,0.62]H)(-[:87.9,0.62]H)-[:167.9]( -[:187.9,0.62]H)(-[:267.9,0.62]H)-[:107.9]S-[:167.9](=[:227.9]O)-[:107.9]( -[:17.9,0.62]H)(-[:107.9,0.62]H)-[:197.9,0.62]H}"},
 {"category":"Nucleobase","name":"腺嘌呤","en":"Adenine","cid":"190","formula":"C5H5N5","mw":"135.13","iupac":"7H-purin-6-amine","smiles":"C1=NC2=NC=NC(=C2N1)N","chemfig":"\\chemfig{H-[:251.9,0.62]N-[:197.8,0.994]-[:270](-[:342.2,0.994]N =^[:54,0.994](-[,0.62]H)-[:126,0.994]\\phantom{N})=_[:210]N-[:150]( -[:210,0.62]H)=_[:90]N-[:30](=_[:330])-[:90]N(-[:150,0.62]H)-[:30,0.62]H}"},
@@ -1235,7 +1209,11 @@ const MOLECULE_DB=[
 {"category":"Monomer","name":"ε-己內酯","en":"ε-Caprolactone","cid":"10401","formula":"C6H10O2","mw":"114.14","iupac":"oxepan-2-one","smiles":"C1CCC(=O)OCC1","chemfig":"\\chemfig{O=[:38.6,1.613]-[:334.3,1.613]O-[:25.7,1.613](-[:282.9]H)(-H) -[:77.1,1.613](-[:334.3]H)(-[:51.4]H)-[:128.6,1.613](-[:25.7]H)(-[:102.9]H) -[:180,1.613](-[:77.1]H)(-[:154.3]H)-[:231.4,1.613](-[:282.9,1.613])( -[:128.6]H)-[:205.7]H}"},
 {"category":"Industrial","name":"二甲基二氯矽烷","en":"Dimethyldichlorosilane","cid":"6398","formula":"C2H6Cl2Si","mw":"129.06","iupac":"dichloro(dimethyl)silane","smiles":"C[Si](C)(Cl)Cl","chemfig":"\\chemfig{Cl-[:210,1.613]Si(-[:210,1.613]Cl)(-[:120,1.613](-[:120]H)( -[:210]H)-[:30]H)-[:300,1.613](-[:210]H)(-[:300]H)-[:30]H}"},
 {"category":"Dye","name":"對苯二胺","en":"p-Phenylenediamine","cid":"7814","formula":"C6H8N2","mw":"108.14","iupac":"benzene-1,4-diamine","smiles":"C1=CC(=CC=C1N)N","chemfig":"\\chemfig{H-[:330,0.62]=_[:30](-[:90]N(-[:150,0.62]H)-[:30,0.62]H)-[:330]( -[:30,0.62]H)=_[:270](-[:330,0.62]H)-[:210](-[:270]N(-[:330,0.62]H) -[:210,0.62]H)=_[:150](-[:90])-[:210,0.62]H}"},
-{"category":"Monomer","name":"對苯二甲醯氯","en":"Terephthaloyl chloride","cid":"7488","formula":"C8H4Cl2O2","mw":"203.02","iupac":"benzene-1,4-dicarbonyl chloride","smiles":"C1=CC(=CC=C1C(=O)Cl)C(=O)Cl","chemfig":"\\chemfig{Cl-[:30](=[:330]O)-[:90]=^[:30](-[:330,0.62]H)-[:90](-[:30,0.62]H) =^[:150](-[:90](=[:150]O)-[:30]Cl)-[:210](-[:150,0.62]H)=^[:270](-[:330]) -[:210,0.62]H}"}
+{"category":"Monomer","name":"對苯二甲醯氯","en":"Terephthaloyl chloride","cid":"7488","formula":"C8H4Cl2O2","mw":"203.02","iupac":"benzene-1,4-dicarbonyl chloride","smiles":"C1=CC(=CC=C1C(=O)Cl)C(=O)Cl","chemfig":"\\chemfig{Cl-[:30](=[:330]O)-[:90]=^[:30](-[:330,0.62]H)-[:90](-[:30,0.62]H) =^[:150](-[:90](=[:150]O)-[:30]Cl)-[:210](-[:150,0.62]H)=^[:270](-[:330]) -[:210,0.62]H}"},
+{"category":"CarboxylicAcid","name":"馬來酸","en":"Maleic acid","cid":"444266","formula":"C4H4O4","mw":"116.07","iupac":"(Z)-but-2-enedioic acid","smiles":"OC(=O)/C=C\\C(O)=O","chemfig":"\\chemfig{C(-[:120]COOH)(-[:240]H)=[:0]C(-[:60]COOH)(-[:300]H)}"},
+{"category":"Inorganic","name":"六氨鈷","en":"Hexamminecobalt(III) chloride","cid":"159295","formula":"CoH18Cl3N6","mw":"267.48","iupac":"cobalt(3+) trichloride hexaazane","smiles":"[Cl-].[Cl-].[Cl-].[Co+3].N.N.N.N.N.N","chemfig":"$\\left[\\vcenter{\\hbox{\\chemfig{Co(-[:90,,,,<-]NH_3)(-[:270,,,,<-]NH_3)(>:[:150]NH_3)(>:[:30]NH_3)(>[:210]NH_3)(>[:330]NH_3)}}}\\right]^{3+}\\ 3\\,\\mathrm{Cl}^{-}$"},
+{"category":"Inorganic","name":"亞鐵氰化鉀","en":"Potassium ferrocyanide","cid":"161067","formula":"C6FeK4N6","mw":"368.35","iupac":"tetrapotassium hexacyanoferrate(II)","smiles":"[K+].[K+].[K+].[K+].[Fe+2].[C-]#N.[C-]#N.[C-]#N.[C-]#N.[C-]#N.[C-]#N","chemfig":"$\\left[\\vcenter{\\hbox{\\chemfig{Fe(-[:90,,,,<-]C~[:90]N)(-[:270,,,,<-]C~[:270]N)(>:[:150]C~[:150]N)(>:[:30]C~[:30]N)(>[:210]C~[:210]N)(>[:330]C~[:330]N)}}}\\right]^{4-}\\ 4\\,\\mathrm{K}^{+}$"},
+{"category":"Inorganic","name":"鐵氰化鉀","en":"Potassium ferricyanide","cid":"26250","formula":"C6FeK3N6","mw":"329.24","iupac":"tripotassium hexacyanoferrate(III)","smiles":"[K+].[K+].[K+].N#C[Fe-3](C#N)(C#N)(C#N)(C#N)C#N","chemfig":"$\\left[\\vcenter{\\hbox{\\chemfig{Fe(-[:90,,,,<-]C~[:90]N)(-[:270,,,,<-]C~[:270]N)(>:[:150]C~[:150]N)(>:[:30]C~[:30]N)(>[:210]C~[:210]N)(>[:330]C~[:330]N)}}}\\right]^{3-}\\ 3\\,\\mathrm{K}^{+}$"}
 ];
 </script>
 </body></html>
