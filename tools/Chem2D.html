@@ -16,24 +16,17 @@
 .step.done{background:var(--color-background-success);color:var(--color-text-success)}
 .step.running{background:var(--color-background-warning);color:var(--color-text-warning)}
 .step.fail{background:var(--color-background-danger);color:var(--color-text-danger)}
-.translated-badge{font-size:13px;padding:2px 8px;border-radius:12px;background:var(--color-background-info);color:var(--color-text-info);margin-left:6px;vertical-align:middle}
 .card{background:var(--color-background-primary);border:.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem}
 .lbl{font-size:16px;color:var(--color-text-secondary);margin-bottom:.4rem}
-.mono{font-family:var(--font-mono);font-size:17px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;word-break:break-all;white-space:pre-wrap;line-height:1.6;color:var(--color-text-primary);margin-top:.4rem}
-.copy-btn{font-size:15px;margin-top:6px;padding:5px 12px}
-.sec{font-size:22px;font-weight:600;color:#000080;margin:.9rem 0 .3rem}
 #canvas-wrap{display:flex;justify-content:flex-start;align-items:center;min-height:210px}
-#canvas-wrap canvas{max-width:100%;height:750}
+#canvas-wrap canvas{max-width:100%;height:750px}
 .coord-figure{width:100%;max-width:760px}
 .coord-figure svg{display:block;width:100%;height:auto;max-height:430px}
 @media(max-width:640px){
   .wrap{padding:1.2rem .8rem 1rem;font-size:17px}
   h2{font-size:1.2rem!important}
-  .sec{font-size:20px}
   .lbl{font-size:17px}
-  .mono{font-size:17px}
   .tag{font-size:16px;padding:5px 12px}
-  .copy-btn{font-size:16px}
   .search-row input{font-size:18px}
   .status{font-size:16px}
 }
@@ -293,7 +286,7 @@ const pngUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+CID+'/PNG
 }
 
 async function pubchemFetch(name){
-  const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(name)}/property/IsomericSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
+  const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(name)}/property/SMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
   if(!r.ok) return null;
   const d=await r.json();
   return d.PropertyTable.Properties[0];
@@ -366,7 +359,7 @@ function renderProteinCard(query,entries){
 }
 
 async function pubchemFetchByCid(cid){
-  const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/property/IsomericSMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
+  const r=await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${cid}/property/SMILES,MolecularFormula,MolecularWeight,IUPACName/JSON`);
   if(!r.ok) return null;
   const d=await r.json();
   const p=d.PropertyTable.Properties[0];
@@ -458,11 +451,8 @@ async function run(){
   setStatus(step('直接查詢 PubChem','running')+' 查詢中…');
 
   let props=null;
-  let usedTranslation=false;
   let usedWiki=false;
-  let usedAlias=false;
   let translatedTo='';
-  let wikiTitle='';
 
   props=await pubchemFetch(q);
 
@@ -471,7 +461,7 @@ async function run(){
     if(alias){
       setStatus(step('直接查詢 PubChem','fail')+step('常用名對照','running')+'「'+alias+'」…');
       props=await pubchemFetch(alias);
-      if(props){usedAlias=true;translatedTo=alias;}
+      if(props){translatedTo=alias;}
     }
   }
 
@@ -481,7 +471,6 @@ async function run(){
     if(wiki){
       props=wiki.props;
       usedWiki=true;
-      wikiTitle=wiki.wikiTitle;
       translatedTo=wiki.enTitle;
       setStatus(step('直接查詢 PubChem','fail')+step('維基百科','done')+`「${wiki.wikiTitle}」→「${wiki.enTitle}」`+step('查詢 PubChem','done'));
     }
@@ -494,7 +483,6 @@ async function run(){
       translatedTo=en;
       setStatus(step('直接查詢 PubChem','fail')+step('維基百科','fail')+step('翻譯','done')+`「${en}」`+step('查詢 PubChem','running')+' 再次查詢…');
       props=await pubchemFetch(en);
-      if(props) usedTranslation=true;
     }
     if(!props){
       // Fallback: parallel-check UniProt (protein) + PubChem autocomplete (small molecule)
@@ -561,19 +549,10 @@ async function run(){
     }
   }
 
-  const {CID,IsomericSMILES,SMILES:canonicalSMILES,MolecularFormula:formula,MolecularWeight:mw,IUPACName:iupac}=props;
-  const smiles=IsomericSMILES||canonicalSMILES||'';
+  // PubChem 已將 property 由 IsomericSMILES 更名為 SMILES（舊名保留為備援）
+  const {CID,SMILES,IsomericSMILES,MolecularFormula:formula,MolecularWeight:mw,IUPACName:iupac}=props;
+  const smiles=SMILES||IsomericSMILES||'';
   const coordSpecial=getCoordinationSpecialCase({cid:CID,smiles,iupac,formula});
-  const mhchemDisplay=coordSpecial?coordSpecial.formulaTex:formula;
-
-  // 2D-only mode: info card (IUPAC/formula/mw/SMILES/mhchem) is split to ChemLatex.html.
-  // Use null-safe setter so this page still works when those elements are absent.
-  const _set=(id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt;};
-  _set('iupac',iupac||'');
-  _set('formula','分子式：'+formula);
-  _set('mw','分子量：'+parseFloat(mw).toFixed(2)+' g/mol');
-  _set('smiles',smiles);
-  _set('mhchem','\\ce{'+mhchemDisplay+'}');
   const pc3d=document.getElementById('pc3d');
   if(pc3d) pc3d.href='https://pubchem.ncbi.nlm.nih.gov/compound/'+CID+'#section=3D-Conformer';
   const enName=translatedTo||iupac||q;
@@ -585,32 +564,6 @@ async function run(){
     .then(r=>r.ok?r.json():[])
     .then(data=>{if(data.length&&data[0].url)ctLink.href=data[0].url;})
     .catch(()=>{});
-
-  const badge=document.getElementById('xlat-badge');
-  const xfrom=document.getElementById('xlat-from');
-  // 2D-only mode: badge/xfrom live in the info card, which is split to ChemLatex.html.
-  // Skip the block entirely when those elements are absent.
-  if(badge&&xfrom){
-    if(usedWiki){
-      badge.style.display='';
-      badge.textContent='經維基查到';
-      xfrom.style.display='';
-      xfrom.textContent='維基條目：「'+q+'」→「'+wikiTitle+'」→ PubChem「'+translatedTo+'」';
-    }else if(usedAlias){
-      badge.style.display='';
-      badge.textContent='常用名對照';
-      xfrom.style.display='';
-      xfrom.textContent='對照結果：「'+q+'」→「'+translatedTo+'」';
-    }else if(usedTranslation){
-      badge.style.display='';
-      badge.textContent='經翻譯查到';
-      xfrom.style.display='';
-      xfrom.textContent='對照結果：「'+q+'」→「'+translatedTo+'」';
-    } else {
-      badge.style.display='none';
-      xfrom.style.display='none';
-    }
-  }
 
   document.getElementById('status').style.display='none';
   document.getElementById('results').style.display='block';
