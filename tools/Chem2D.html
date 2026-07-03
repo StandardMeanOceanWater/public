@@ -53,9 +53,8 @@
   <span class="tag" onclick="go(&#39;青黴素&#39;)">青黴素</span>
   <span class="tag" onclick="go(&#39;順丁烯二酸&#39;)">順丁烯二酸/馬來酸</span>
   <span class="tag" onclick="go(&#39;反丁烯二酸&#39;)">反丁烯二酸/富馬酸</span>
-  <span class="tag" onclick="go(&#39;乙二胺四乙酸&#39;)">乙二胺四乙酸(EDTA)</span>
-  <span class="tag" onclick="go(&#39;三氯化六氨合鈷&#39;)">三氯化六氨合鈷/無機黃鈷鹽</span>
-  <span class="tag" onclick="go(&#39;亞鐵氰化鉀&#39;)">亞鐵氰化鉀酸/黃血鹽</span>
+  <span class="tag" onclick="go(&#39;三氯化六氨合鈷&#39;)">黃鈷鹽/三氯化六氨合鈷</span>
+  <span class="tag" onclick="go(&#39;亞鐵氰化鉀&#39;)">黃血鹽/亞鐵氰化鉀酸</span>
   <span class="tag" onclick="go(&#39;赤血鹽&#39;)">赤血鹽/鐵氰化鉀</span>
 </div>
 
@@ -67,9 +66,9 @@
     <div id="canvas-wrap"><canvas id="mc" width="1000" height="750"></canvas></div>
     <a id="pc3d" href="https://standardmeanoceanwater.github.io/public/tools/ChemLatex.html#" style="font-size:12px;color:var(--color-text-info);display:inline-block;margin-top:8px">🔬 PubChem 3D 結構 (上下文即有完整分子資訊) <i class="ti ti-external-link" aria-hidden="true"></i></a>
     <span style="font-size:12px;color:var(--color-text-tertiary);margin:0 6px">|</span>
-    <a id="molview-link" href="#" target="_blank" style="font-size:12px;color:var(--color-text-info);display:inline-block">🧪 MolView 3D <i class="ti ti-external-link" aria-hidden="true"></i></a>
+    <a id="molview-link" href="#" target="_blank" style="font-size:12px;color:var(--color-text-info);display:inline-block">🧪 MolView (2D&3D，可改繪，預設開啟為咖啡因) <i class="ti ti-external-link" aria-hidden="true"></i></a>
     <span style="font-size:12px;color:var(--color-text-tertiary);margin:0 6px">|</span>
-    <a id="chemtube3d-link" href="#" target="_blank" style="font-size:12px;color:var(--color-text-info);display:inline-block">🧬 ChemTube3D <i class="ti ti-external-link" aria-hidden="true"></i></a>
+    <a id="chemtube3d-link" href="#" target="_blank" style="font-size:12px;color:var(--color-text-info);display:inline-block">🧬 ChemTube3D (可能缺資料) <i class="ti ti-external-link" aria-hidden="true"></i></a>
   </div>
 </div>
 </div>
@@ -259,19 +258,24 @@ function renderCoordinationSvg(spec){
   for(const c of spec.counterIons){ counterCounts[c]=(counterCounts[c]||0)+1; }
   const counterEntries=Object.entries(counterCounts);
   const counterTexts=counterEntries.map(([c,n],i)=>`<text x="600" y="${185+i*40}" class="ion">${n>1?n+'\u00D7'+c:c}</text>`).join('');
-  const formulaCaption=`${spec.metal}(${spec.ligands.join(',')}) ${spec.predictedGeometry} CN=${spec.coordinationNumber}`;
+  const capLigCounts={};
+  for(const l of spec.ligands){ capLigCounts[l]=(capLigCounts[l]||0)+1; }
+  const capSub=n=>String(n).replace(/[0-9]/g,d=>'\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089'[+d]);
+  const capLigStr=Object.entries(capLigCounts).map(([l,n])=>(l.length>1?`(${l})`:l)+(n>1?capSub(n):'')).join('');
+  const centerLabel=`${spec.metal}${chargeSup(spec.oxidationState)}`;
+  const formulaCaption=`${centerLabel}${capLigStr}  ${spec.predictedGeometry} CN=${spec.coordinationNumber}`;
   return `<div class="coord-figure" role="img" aria-label="${geometry} coordination schematic">
     <svg viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg">
       <style>
-        .metal{font:700 34px sans-serif;fill:#3b5068}
+        .metal{font:700 30px sans-serif;fill:#3b5068}
         .ligand{font:600 22px sans-serif;fill:#2367b0}
         .ion{font:600 22px sans-serif;fill:#25964a}
         .caption{font:14px sans-serif;fill:#667085}
       </style>
       <rect width="760" height="430" fill="transparent"/>
       ${bonds}
-      <circle cx="${cx}" cy="${cy}" r="37" fill="#eef4ff" stroke="#3b5068" stroke-width="2"/>
-      <text x="${cx}" y="${cy+12}" text-anchor="middle" class="metal">${spec.metal}</text>
+      <circle cx="${cx}" cy="${cy}" r="42" fill="#eef4ff" stroke="#3b5068" stroke-width="2"/>
+      <text x="${cx}" y="${cy+12}" text-anchor="middle" class="metal">${centerLabel}</text>
       ${labels}
       <text x="${cx-100}" y="${cy-130}" class="caption">${formulaCaption}</text>
       ${counterTexts}
