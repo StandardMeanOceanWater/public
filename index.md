@@ -19,6 +19,7 @@ Science and Nature 當期研究文章週報
 
 ---
 
+- [2026-07-04](journal/weekly_journal_2026-07-04.html)
 - [2026-06-26](journal/weekly_journal_2026-06-26.html)
 - [2026-06-18](journal/weekly_journal_2026-06-18.html)
 - [2026-06-11](journal/weekly_journal_2026-06-11.html)
