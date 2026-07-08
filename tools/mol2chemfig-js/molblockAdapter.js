@@ -161,6 +161,47 @@ export function parseMolblockV2000(text) {
 //                              ring renders with alternating Kekulized double
 //                              bonds instead of a circle (equivalent to the
 //                              default aromatic_circles=false rendering).
+// Clear isAromaticRingBond on bonds that Indigo would treat as
+// non-aromatic: those living only in rings that contain an atom bearing an
+// exocyclic double bond (e.g. a ring carbonyl). A bond survives as aromatic
+// if it belongs to at least one ring free of such atoms -- so a fusion bond
+// shared with a genuinely aromatic ring keeps its aromatic flag. Mutates
+// `bonds` in place. See adaptMolblock for why this matters.
+function deAromatizeExocyclicRings(numAtoms, bonds) {
+  const rings = findSSSR(
+    numAtoms,
+    bonds.map((b) => ({ start: b.start, end: b.end })),
+  );
+  if (rings.length === 0) return;
+
+  const ringBondIdxSet = new Set();
+  for (const ring of rings) for (const bi of ring.bondIdxs) ringBondIdxSet.add(bi);
+
+  // an atom has an exocyclic double bond if it sits on a Kekulized double
+  // bond that is not itself part of any ring (a ring C=O, C=N-oxide, etc.).
+  const hasExocyclicDouble = new Array(numAtoms).fill(false);
+  bonds.forEach((bond, i) => {
+    if (bond.order === 2 && !ringBondIdxSet.has(i)) {
+      hasExocyclicDouble[bond.start] = true;
+      hasExocyclicDouble[bond.end] = true;
+    }
+  });
+
+  // union of bonds belonging to at least one "clean" ring (no exocyclic
+  // double-bond atom). These keep their aromatic flag; everything else loses it.
+  const cleanAromaticBonds = new Set();
+  for (const ring of rings) {
+    const clean = ring.atoms.every((a) => !hasExocyclicDouble[a]);
+    if (clean) for (const bi of ring.bondIdxs) cleanAromaticBonds.add(bi);
+  }
+
+  bonds.forEach((bond, i) => {
+    if (bond.isAromaticRingBond && !cleanAromaticBonds.has(i)) {
+      bond.isAromaticRingBond = false;
+    }
+  });
+}
+
 export function adaptMolblock(molblockText, aromaticMolblockText = null) {
   const { atoms, bonds } = parseMolblockV2000(molblockText);
 
@@ -169,6 +210,20 @@ export function adaptMolblock(molblockText, aromaticMolblockText = null) {
     bonds.forEach((bond, i) => {
       bond.isAromaticRingBond = aromaticForm.bonds[i]?.order === 4;
     });
+
+    // Reconcile RDKit's aromaticity model with Indigo's, which the
+    // mol2chemfigPy3 oracle uses. RDKit aromatizes rings whose atoms carry
+    // exocyclic double bonds (the urea/amide carbonyl rings of caffeine,
+    // xanthine, guanine and the other nucleobases); Indigo does not. That
+    // disagreement doesn't change which bonds render as double -- those come
+    // from the Kekulized graph either way -- but annotateRings() sorts rings
+    // by aromaticity, and the sort order decides which ring claims a shared
+    // fusion bond first when assigning its (assign-once) clockwise flag. A
+    // ring wrongly flagged aromatic reorders that and flips the inner
+    // double-bond stroke's side (=_ vs =^). We match Indigo by de-aromatizing
+    // any bond that only belongs to rings containing an exocyclic-double-bond
+    // atom (bonds shared with a genuinely aromatic ring stay aromatic).
+    deAromatizeExocyclicRings(atoms.length, bonds);
   }
 
   const atomWrappers = atoms.map((atom, idx) => {

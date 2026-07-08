@@ -164,5 +164,15 @@ export function findSSSR(numAtoms, bonds) {
     selected.push(candidate);
   }
 
+  // Candidates were processed smallest-first (required for correct SSSR
+  // selection), but molecule.js's annotateRings() sorts rings only by
+  // aromaticity and relies on a stable sort to keep the engine's original
+  // ring order among ties -- that tie order decides which ring claims a
+  // shared fusion bond's (assign-once) clockwise flag, i.e. the side of an
+  // inner double-bond stroke. Indigo, the mol2chemfigPy3 oracle's engine,
+  // emits SSSR rings ordered by their lowest atom index; matching that here
+  // keeps fused-ring double bonds (indole, corrin, ...) on the same side.
+  selected.sort((a, b) => Math.min(...a.atoms) - Math.min(...b.atoms));
+
   return selected;
 }

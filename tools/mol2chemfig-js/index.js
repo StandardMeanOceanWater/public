@@ -1,3 +1,11 @@
+// mol2chemfig-js — a JavaScript port of mol2chemfigPy3.
+//
+// Derived from mol2chemfigPy3 (© 2021 Nianze Tao, MIT License), itself a
+// py2→py3 translation of the original mol2chemfig v1.5 (E. K. Brefo-Mensah &
+// M. Palmer, University of Waterloo). This port is distributed under MIT;
+// upstream copyright notices and full license texts are in
+// ../THIRD-PARTY-NOTICES.md. SPDX-License-Identifier: MIT
+//
 // port of mol2chemfigPy3/processor.py's parseMolecule() + process(), against
 // RDKit.js instead of Indigo.
 //
@@ -18,6 +26,11 @@ import { MCFError } from "./common.js";
 import { getDefaultOptions } from "./options.js";
 import { adaptMolblock } from "./molblockAdapter.js";
 import { Molecule } from "./molecule.js";
+
+// Bump when the port's rendering algorithm changes, so generated chemfig is
+// traceable to a code revision (mirrors ChemLatex.html's legacy
+// CHEMFIG_VERSION). 2026-07-06: Indigo-aligned aromaticity + SSSR ring order.
+export const PORT_VERSION = "mcf-js-2026.07.06";
 
 // build a Molecule from a SMILES (or molfile) string. `userOptions`
 // overrides individual keys in options.js's getDefaultOptions() --
