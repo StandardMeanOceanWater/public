@@ -1,10 +1,8 @@
 # 把作品登記起來：一頁版
 
-> 給高中生和老師。照著做就好，不用先懂原理。
+> 給學生和老師。照著做就好，不用先懂原理。
 > 版本日期：2026-08-27
->
-> 本文由CLAUDE生成，由StandardMeanOceanWater審查後負言責。
-
+> 本文由CLAUDE生成，由StandardMeanOceanWater審查後負言責,採 CC BY 4.0，歡迎自由轉載修改，請保留出處。
 ---
 
 ## 這在做什麼
@@ -65,37 +63,37 @@ Zenodo 補的就是這個洞。
 > 網站是英文的，介面偶爾會改版。
 > 如果按鈕位置跟這裡寫的不一樣，**找關鍵字**（下面用 `這種字` 標出來的）。
 
-**1.** 開 **zenodo.org**，右上角按 `Sign up` 註冊（用 email 就可以）
+1. 開 **zenodo.org**，右上角按 `Sign up` 註冊（用 email 就可以）
 
-**2.** 登入後找 `New upload`（或 `Upload`）
+2. 登入後找 `New upload`（或 `Upload`）
 
-**3.** 把你的檔案拖進去
-　　（Word、PDF、Excel、程式碼、照片都可以，一筆最多 50 GB）
+3. 把你的檔案拖進去
+   - Word、PDF、Excel、程式碼、照片都可以
+   - 一筆最多 50 GB
 
-**4.** `Resource type` 選 **Publication** → 再選 **Preprint**
-　　（不確定就選 **Other**，之後可以改）
+4. `Resource type` 選 **Publication**，再選 **Preprint**
+   - 不確定就選 **Other**，之後可以改
 
-**5.** `Title` 填標題　　`Creators` 填你的名字
-　　小組的話每個人都填上去
+5. `Title` 填標題，`Creators` 填你的名字
+   - 小組的話每個人都填上去
 
-**6.** `Publication date` 填**今天**
+6. `Publication date` 填**今天**
 
-**7.** `Description` 寫三到五句：
-　　　你做了什麼、用了什麼資料、得到什麼結果
-　　　👉 **這幾句話很重要**——上鎖期間，別人只看得到這一段。
-　　　　　寫具體一點，不要只寫「研究颱風」。
+7. `Description` 寫三到五句：你做了什麼、用了什麼資料、得到什麼結果
+   - **這幾句話很重要**：上鎖期間，別人只看得到這一段
+   - 寫具體一點，不要只寫「研究颱風」
 
-**8.** 找 `Visibility`（或 `Access`）這一區：
-　　- 想馬上公開 → 選 `Public`
-　　- **要投比賽 → 檔案那邊選 `Restricted`，勾 `Embargo`**
-　　　日期填「比賽公布結果之後一個月」，時間到會自動開放
+8. 找 `Visibility`（或 `Access`）這一區
+   - 想馬上公開 → 選 `Public`
+   - **要投比賽 → 檔案那邊選 `Restricted`，勾 `Embargo`**
+   - 日期填「比賽公布結果之後一個月」，時間到會自動開放
 
-**9.** `License` 選 **Creative Commons Attribution 4.0**（就是 CC BY 4.0）
-　　❌ 不要選 CC0，那是放棄署名要求
+9. `License` 選 **Creative Commons Attribution 4.0**（就是 CC BY 4.0）
+   - 不要選 CC0，那是放棄署名要求
 
-**10.** 按 `Publish`
+10. 按 `Publish`
 
-**11.** 把那組編號抄下來，存在你自己的筆記本或手機裡
+11. 把那組編號抄下來，存在你自己的筆記本或手機裡
 
 ---
 
