@@ -1,112 +1,141 @@
 # 地球科學期刊日報 — 2026-10-31
 
-地質 0｜大氣 0｜海洋 0｜天文 20｜合計 **20 篇**
+地質 3｜大氣 3｜海洋 1｜天文 20｜合計 **27 篇**
 
 *arXiv 部分是預印本、未經同儕審查；Copernicus 部分是期刊論文。「已刊／備註」欄為作者自述。*
 
-## 地質 — 0 篇 ｜ `physics.geo-ph`
+## 地質 — 3 篇 ｜ `physics.geo-ph`
 
-*（此區間無新文）*
+1. [基於白度交替方向的分段光滑介質自適應地震反演](https://arxiv.org/abs/2610.40433)
+   <sub>Adaptive Seismic Inversion in Piecewise Smooth Media Using Whiteness-based Alternating Directions</sub>
+   `arXiv:2610.40433` ｜ 10/30 ｜ Lian Zhao、Kamal Aghazade、Ali Gholami 等 4 人
 
-## 大氣 — 0 篇 ｜ `physics.ao-ph`
+2. [提前識別2026年熊本地震的起始位置](https://arxiv.org/abs/2610.39393)
+   <sub>Advance identification of where the 2026 Kumamoto earthquake would begin</sub>
+   `arXiv:2610.39393` ｜ 10/29 ｜ K. Z. Nanjo、J. B. Rundle、D. Iwata 等 5 人
 
-*（此區間無新文）*
+3. [岩漿浮力耦合月球地幔對流與岩漿作用：三維區域模型中的長期月海火山活動與半徑變化](https://arxiv.org/abs/2610.39376)
+   <sub>Magma Buoyancy Couples Lunar Mantle Convection and Magmatism: Long-Lasting Mare Volcanism and Radius Change in a 3-D Regional Model</sub>
+   `arXiv:2610.39376` ｜ 10/29 ｜ Ken'yo U、Masanori Kameyama、Takatoshi Yanagisawa 等 5 人
 
-## 海洋 — 0 篇
+## 大氣 — 3 篇 ｜ `physics.ao-ph`
 
-*（此區間無新文）*
+1. [從極端天氣到農業後果的代理式人工智慧](https://arxiv.org/abs/2610.40641)
+   <sub>From extreme weather to agricultural consequences with agentic AI</sub>
+   `arXiv:2610.40641` ｜ 10/30 ｜ Minghan Yu、Mengyu Dai、Yixin Wen 等 4 人
+
+2. [臨界層波吸收控制波—平均流系統中的混沌](https://arxiv.org/abs/2610.39809)
+   <sub>Critical-level wave absorption controls chaos in a wave--mean flow system</sub>
+   `arXiv:2610.39809` ｜ 10/29 ｜ Aymeric Lévy-Dauchez、Louis-Philippe Nadeau、Antoine Venaille ｜ ⚠️ primary=physics.flu-dyn
+
+3. [SD3：首個經業務驗證、完全異構加速的全球公里級模型及其內聯物理架構](https://arxiv.org/abs/2610.39334)
+   <sub>SD3: The First Operationally-Proven, Fully Heterogeneous-Accelerated Global Kilometer-Scale Model with Inline Physics Architecture</sub>
+   `arXiv:2610.39334` ｜ 10/29 ｜ Yuan Liang、Xiaomin Hu、Xi Chen 等 11 人
+
+## 海洋 — 1 篇
+
+1. [愛爾蘭百年海平面變化（1925–2024）](https://doi.org/10.5194/os-22-3499-2026)
+   <sub>A century of sea-level change in Ireland (1925–2024)</sub>
+   `DOI:10.5194/os-22-3499-2026` ｜ 10/30 ｜ Patrick J. McLoughlin、Maeve Upton、Lionel D. Swan 等 8 人 ｜ Ocean Science（Copernicus）
+   已刊：Ocean Sci., 22, 3499–3520, https://doi.org/10.5194/os-22-3499-2026, 2026
 
 ## 天文 — 20 篇
 
-1. [星系群向星系團的通道式與各向同性吸積：運動學、自旋排列與組裝偏差](https://arxiv.org/abs/2610.39987)
-   <sub>Channelled versus Isotropic Accretion of Galaxy Groups onto Clusters: Kinematics, Spin Alignment, and Assembly Bias</sub>
-   `arXiv:2610.39987` ｜ 10/29 ｜ Ankit Singh、Frazer Pearce、Meghan Gray 等 7 人 ｜ 星系
-   備註：Accepted for publication in MNRAS
+1. [熵宇宙論的理論一致性與觀測約束](https://arxiv.org/abs/2610.40205)
+   <sub>Theoretical Consistency and Observational Constraints on Entropic Cosmology</sub>
+   `arXiv:2610.40205` ｜ 10/29 ｜ Yunliang Ren、Xiaofeng Yang、Xuwei Zhang 等 6 人 ｜ 宇宙學
+   已刊：Phys. Lett. B 883 (2026) 141085
 
-2. [太陽慣性模數值模擬的最新進展](https://arxiv.org/abs/2610.39963)
-   <sub>Recent advances in numerical modeling of solar inertial modes</sub>
-   `arXiv:2610.39963` ｜ 10/29 ｜ Yuto Bekki、Laurent Gizon ｜ 恆星
-   備註：28 pages, 7 figures; Accepted for publication in Solar Physics
+2. [KM3-230213A：最高能量的宇宙微中子](https://arxiv.org/abs/2610.40053)
+   <sub>KM3-230213A: The Highest-Energy Cosmic Neutrino</sub>
+   `arXiv:2610.40053` ｜ 10/29 ｜ Carla Distefano ｜ 高能
+   已刊：Physics and the Cosmos 1 (1), 9 (2026) ｜ 備註：24 pages, 13 figures, 1 table. Published in Physics and the Cosmos (2026)
 
-3. [為JUICE太空船精確VLBI觀測準備天球場：金星飛掠測試案例](https://arxiv.org/abs/2610.39925)
-   <sub>Preparation of a celestial field for precise VLBI observations of the JUICE spacecraft: a test case of the Venus flyby</sub>
-   `arXiv:2610.39925` ｜ 10/29 ｜ Krisztina Perger、Sándor Frey、Giuseppe Cimò 等 14 人 ｜ 儀器
-   備註：13 pages, 6 tables, 6 figures. Accepted for publication in PASA
+3. [以LAMOST與Subaru研究的四百顆極貧金屬星。IV. 重元素增豐星](https://arxiv.org/abs/2610.40014)
+   <sub>Four-hundred Very Metal-poor Stars Studied with LAMOST and Subaru. IV. Heavy Element Enhanced Stars</sub>
+   `arXiv:2610.40014` ｜ 10/29 ｜ Yangming Lin、Haining Li、Wako Aoki 等 10 人 ｜ 恆星
+   已刊：Astrophys. J. 1003 (2026) 75 ｜ 備註：26 pages, published in The Astrophysical Journal
 
-4. [早期宇宙的塵埃成長：來自NewCluster衍生模擬的洞見](https://arxiv.org/abs/2610.39683)
-   <sub>Dust growth in the early Universe: insight from the NewCluster spin-off simulation</sub>
-   `arXiv:2610.39683` ｜ 10/29 ｜ J. K. Jang、Yohan Dubois、Francisco Rodriguez Montero 等 10 人 ｜ 星系
-   備註：15 pages, 11 figures, accepted for publication in the Monthly Notices of the Royal Astronomical Society
+4. [VERITAS對銀河系中心暈暗物質湮滅的限制](https://arxiv.org/abs/2610.39865)
+   <sub>VERITAS Limits on Dark Matter Annihilation in the Galactic Center Halo</sub>
+   `arXiv:2610.39865` ｜ 10/29 ｜ A. Archer、P. Bangale、J. T. Bartkoske 等 61 人 ｜ 高能
+   已刊：Archer et al. 2026, Phys. Rev. D 114, 083044
 
-5. [星際介質中HNCOH+的偵測](https://arxiv.org/abs/2610.39654)
-   <sub>Detection of HNCOH+ in the interstellar medium</sub>
-   `arXiv:2610.39654` ｜ 10/29 ｜ M. Rey-Montejo、I. Jimenez-Serra、M. Sanz-Novo 等 15 人 ｜ 恆星
-   備註：Letter, Accepted in A&A
+5. [諧波亮度振盪指向罕見短伽馬射線暴中的磁星巨耀斑](https://arxiv.org/abs/2610.39130)
+   <sub>Harmonic brightness oscillations point to magnetar giant flares in rare short gamma-ray bursts</sub>
+   `arXiv:2610.39130` ｜ 10/29 ｜ Run-Chao Chen、Ore Gottlieb、Bin-Bin Zhang 等 8 人 ｜ 高能
+   已刊：Science Advances 12(44), eaee6388 (2026) ｜ 備註：57 pages, 9 figures; Authors' version of the article published in Science Advances, available at https://www.science.org
 
-6. [以特長基線干涉測量揭示類星體1524-136的異常天測行為與電波結構](https://arxiv.org/abs/2610.39603)
-   <sub>The Peculiar Astrometric Behaviour and Radio Structure of the Quasar 1524-136 Revealed with Very Long Baseline Interferometry</sub>
-   `arXiv:2610.39603` ｜ 10/29 ｜ Angelina Osetrova、Sándor Frey、Oleg Titov 等 5 人 ｜ 星系
-   備註：22 pages, 5 figures, accepted for publication in the journal Symmetry
+6. [星系團中高紅移X射線空洞在宇宙微波背景中的條件可見性](https://arxiv.org/abs/2610.40610)
+   <sub>The Conditional CMB Visibility of High-Redshift X-Ray Cavities in Galaxy clusters</sub>
+   `arXiv:2610.40610` ｜ 10/30 ｜ Ramananda Santra、Samik Mitra ｜ 高能
+   備註：11 pages, 3 figures. Accepted for publication in ApJ. Comments are welcome
 
-7. [天琴重力波探測中太空電漿雷射傳播導致的指向誤差](https://arxiv.org/abs/2610.39587)
-   <sub>The Pointing Error Due To Laser Propagation in Space Plasma for TianQin Gravitational Wave Detection</sub>
-   `arXiv:2610.39587` ｜ 10/29 ｜ S. W. Zhou、W. Su、S. Y. Zhou 等 5 人 ｜ 恆星
-   備註：14 pages, 7 figures Published in Space Weather
+7. [黑洞基本平面未解析的高質量前沿](https://arxiv.org/abs/2610.40606)
+   <sub>The unresolved high-mass frontier of the black hole Fundamental Plane</sub>
+   `arXiv:2610.40606` ｜ 10/30 ｜ Ramananda Santra、Samik Mitra、Shahram Abbassi ｜ 高能
+   備註：17 pages, 7 figures. Accepted for Publications in PASP
 
-8. [基於深度學習的星系團成員識別與質量估計方法](https://arxiv.org/abs/2610.39546)
-   <sub>A deep learning approach to member identification and mass estimation in galaxy clusters</sub>
-   `arXiv:2610.39546` ｜ 10/29 ｜ Zicheng Wang、Liping Fu、Wei Du 等 12 人 ｜ 宇宙學
-   備註：16 pages, 13 figures, 5 tables. Accepted by Astronomy & Astrophysics
+8. [跨空間與時間測繪恆星傾斜角](https://arxiv.org/abs/2610.40527)
+   <sub>Mapping Stellar Obliquity Across Space and Time</sub>
+   `arXiv:2610.40527` ｜ 10/30 ｜ Lauren I. Biddle、Brendan P. Bowler ｜ 行星
+   備註：Accepted for publication in The Astronomical Journal
 
-9. [在模擬宇宙中探測缺乏暗物質星系的多重形成通道](https://arxiv.org/abs/2610.39431)
-   <sub>Probing Multi-formation Channels of Dark Matter-Deficient Galaxies in a Simulated Universe</sub>
-   `arXiv:2610.39431` ｜ 10/29 ｜ Sanghyeon Han、Ho Seong Hwang、Jaehyun Lee ｜ 星系
-   備註：28 pages, 21 figures, accepted for publication in ApJ
+9. [超子中子星中Δ共振態對重力波旋近信號的影響](https://arxiv.org/abs/2610.40441)
+   <sub>Influence of Δ resonances in hyperonic neutron stars on gravitational-wave inspiral signatures</sub>
+   `arXiv:2610.40441` ｜ 10/30 ｜ Athira S.、Vivek Baruah Thapa、Monika Sinha ｜ 高能
+   備註：16 pages, 7 figures. Accepted for publication in Phys. Rev. D
 
-10. [極低質量衛星星系中紫外輻射的起源：來自Leo T的洞見](https://arxiv.org/abs/2610.39390)
-   <sub>The origin of UV emission in extremely low-mass satellite galaxies: Insights from Leo T</sub>
-   `arXiv:2610.39390` ｜ 10/29 ｜ S Amrutha、Mousumi Das、Daniel Vaz 等 4 人 ｜ 星系
-   備註：Accepted for publication in Astronomy & Astrophysics
+10. [ZPEKTR程式用於測定Be星傾斜角的擴展與驗證](https://arxiv.org/abs/2610.40375)
+   <sub>Extension and validation of the ZPEKTR code for determining the inclination angles of Be stars</sub>
+   `arXiv:2610.40375` ｜ 10/30 ｜ Daniela Turis-Gallo、Michel Curé、Ronaldo. S. Levenhagen 等 5 人 ｜ 恆星
+   備註：Paper accepted for publication on A&A (accepted date: 21/10/2026)
 
-11. [從色散到金屬豐度：利用快速電波爆探測銀河系周星系介質](https://arxiv.org/abs/2610.40609)
-   <sub>From Dispersion to Metallicity: Probing the Milky Way Circumgalactic Medium with Fast Radio Bursts</sub>
-   `arXiv:2610.40609` ｜ 10/30 ｜ Manami Roy、Sanskriti Das、Smita Mathur 等 5 人 ｜ 星系
+11. [利用ALMA光譜巡天研究原恆星中的複雜有機分子（COMPASS）VIII. 全氘化甲基氰的首次星際探測](https://arxiv.org/abs/2610.40365)
+   <sub>Complex Organic Molecules in Protostars with ALMA Spectral Surveys (COMPASS) VIII. First interstellar detection of fully deuterated methyl cyanide</sub>
+   `arXiv:2610.40365` ｜ 10/30 ｜ A. Belloche、J. K. Jørgensen、M. N. Drozdovskaya 等 15 人 ｜ 星系
+   備註：Accepted for publication in Astronomy and Astrophysics
 
-12. [IRAC遙遠星系團巡天](https://arxiv.org/abs/2610.40534)
-   <sub>The IRAC Distant Cluster Survey</sub>
-   `arXiv:2610.40534` ｜ 10/30 ｜ Karolina Garcia、Anthony H. Gonzalez、Mark Brodwin 等 12 人 ｜ 星系
+12. [與恆星對弈西洋棋II. 對14個核球球狀星團中135顆巨星樣本的高解析度光譜均勻分析](https://arxiv.org/abs/2610.40332)
+   <sub>Playing CHESS with stars II. Homogeneous analysis of high-resolution optical spectra for a sample of 135 giants in 14 bulge globular clusters</sub>
+   `arXiv:2610.40332` ｜ 10/29 ｜ S. Özdemir、R. Smiljanic、J. E. Martínez Fernández 等 6 人 ｜ 恆星
+   備註：Accepted for publication in A&A (15 pages)
 
-13. [OCCAMS：基於多任務學習的宇宙微波背景功率譜研究](https://arxiv.org/abs/2610.40415)
-   <sub>OCCAMS: A Multi-Task Learning-Based Investigation of the CMB Power Spectra</sub>
-   `arXiv:2610.40415` ｜ 10/30 ｜ Ankit Mandal、Rahul Shah、Md. Wali Hossain 等 6 人 ｜ 宇宙學
+13. [靜止橢圓宿主星系中重複快速電波爆FRB 20240209A的偏振與爆發特性](https://arxiv.org/abs/2610.40326)
+   <sub>Polarization and Burst Properties of the Repeating FRB 20240209A in a Quiescent Elliptical Host</sub>
+   `arXiv:2610.40326` ｜ 10/29 ｜ Yong-Kun Zhang、Yi Feng、Di Li 等 7 人 ｜ 高能
+   備註：12 pages, 7 figures, 1 table. Accepted for publication in ApJ
 
-14. [論寬雙星重力檢驗中軌道的正確三維建模](https://arxiv.org/abs/2610.40388)
-   <sub>On the Proper 3D Modeling of Orbits in Wide Binary Gravity Tests</sub>
-   `arXiv:2610.40388` ｜ 10/30 ｜ Kyu-Hyun Chae ｜ 恆星
+14. [S187大質量恆星形成區中一個無NH_3對應體的緊湊NH_2D源](https://arxiv.org/abs/2610.40219)
+   <sub>A compact NH_2D source without NH_3 counterpart in the S187 high-mass star-forming region</sub>
+   `arXiv:2610.40219` ｜ 10/29 ｜ E. A. Trofimova、I. I. Zinchenko、C. Henkel 等 6 人 ｜ 星系
+   備註：8 pages, 5 figures, accepted by Astronomy & Astrophysics
 
-15. [透過Rubin天文台雙頻GPS測量可降水量](https://arxiv.org/abs/2610.40363)
-   <sub>Measuring Precipitable Water Vapor through Dual-Band GPS at Rubin Observatory</sub>
-   `arXiv:2610.40363` ｜ 10/30 ｜ Anja Weyant、W. M. Wood-Vasey、Elana K. Urbach 等 5 人 ｜ 儀器
+15. [SCAO系統中花瓣模態的時間正則化：軟限制器方法](https://arxiv.org/abs/2610.40184)
+   <sub>Temporal regularization of petal modes in SCAO systems: The Soft-Limiter approach</sub>
+   `arXiv:2610.40184` ｜ 10/29 ｜ Guido Agapito、Jueqi Lin、Carmelo Arcidiacono 等 6 人 ｜ 儀器
+   備註：Accepted for publication in Astronomy & Astrophysics. 13 pages, 9 figures
 
-16. [具暗部門耦合的變色龍暗能量宇宙學檢驗](https://arxiv.org/abs/2610.40347)
-   <sub>Cosmological tests of chameleon dark energy with dark sector coupling</sub>
-   `arXiv:2610.40347` ｜ 10/30 ｜ Jia-Qi Wang、Zong-Kuan Guo、Shao-Jiang Wang ｜ 宇宙學
+16. [SDSS-V LVM：瀉湖星雲電漿溫度測繪揭示長期化學豐度差異的起源](https://arxiv.org/abs/2610.40045)
+   <sub>SDSS-V LVM: Mapping of plasma temperatures in the Lagoon Nebula reveals the origin of long-standing chemical abundance discrepancies</sub>
+   `arXiv:2610.40045` ｜ 10/29 ｜ Amrita Singh、Guillermo A. Blanc、Kathryn Kreckel 等 21 人 ｜ 星系
+   備註：Accepted to ApJ. 12 pages, 6 Figures
 
-17. [來自Zwicky瞬變設施的六個新食雙星AM CVn系統](https://arxiv.org/abs/2610.40346)
-   <sub>Six New Eclipsing AM CVn Binaries from the Zwicky Transient Facility</sub>
-   `arXiv:2610.40346` ｜ 10/30 ｜ Aaron Householder、Kevin B. Burdge、Yapeng Zhang 等 19 人 ｜ 恆星
+17. [TESS與Gaia DR3所見的盾牌座δ型變星不穩定帶與週光關係](https://arxiv.org/abs/2610.40656)
+   <sub>The δ Scuti instability strip and period-luminosity relation as seen by TESS and Gaia DR3</sub>
+   `arXiv:2610.40656` ｜ 10/30 ｜ Daniel Hey、Simon Murphy、Timothy R. Bedding 等 11 人 ｜ 恆星
 
-18. [宇宙學透鏡效應作為跳躍過程](https://arxiv.org/abs/2610.40341)
-   <sub>Cosmological lensing as a jump process</sub>
-   `arXiv:2610.40341` ｜ 10/30 ｜ Galymzhan Baltabay、Ville Vaskonen ｜ 宇宙學
+18. [PRISMS GHZ8：z=10.23處年輕爆發與潛在合併活動的證據](https://arxiv.org/abs/2610.40633)
+   <sub>PRISMS GHZ8: Evidence for a Young Burst and Potential Merger Activity at z=10.23</sub>
+   `arXiv:2610.40633` ｜ 10/30 ｜ Ruqiu Lin、Jorge Zavala、Javier Álvarez-Márquez 等 29 人 ｜ 星系
 
-19. [用於譜線強度映射的經驗校準[C II]光度—暈質量關係](https://arxiv.org/abs/2610.40550)
-   <sub>An Empirically Calibrated [C II] Luminosity-Halo Mass Relation for Line Intensity Mapping</sub>
-   `arXiv:2610.40550` ｜ 10/30 ｜ Oliver Jeong、Martin White ｜ 星系
+19. [邊際捕獲閾值下對數喉部的重力波回聲與灰體截斷](https://arxiv.org/abs/2610.40631)
+   <sub>Gravitational-Wave Echoes and Greybody Cutoff from Logarithmic Throats at a Marginal-Trapping Threshold</sub>
+   `arXiv:2610.40631` ｜ 10/30 ｜ Jahed Abedi ｜ 高能 ｜ ⚠️ primary=gr-qc
 
-20. [為土衛二熱環境全球測繪量身定製紅外濾光片](https://arxiv.org/abs/2610.40456)
-   <sub>Tailoring Infra-Red Filters for Global Mapping of Enceladus' Thermal Environment</sub>
-   `arXiv:2610.40456` ｜ 10/30 ｜ D. G. Lyster、C. J. A. Howett、N. E. Bowles 等 6 人 ｜ 行星
+20. [壓力下的場級推斷：熱Sunyaev-Zel'dovich場的資訊含量](https://arxiv.org/abs/2610.40617)
+   <sub>Field-level inference under pressure: the information content of the thermal Sunyaev-Zel'dovich field</sub>
+   `arXiv:2610.40617` ｜ 10/30 ｜ Carmen Embil Villagra、Adrian E. Bayer、William R. Coulton 等 9 人 ｜ 宇宙學
 
 ---
-產生時間：2026-10-31 09:19（台北）
+產生時間：2026-10-31 09:21（台北）
