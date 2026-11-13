@@ -50,16 +50,16 @@ Science and Nature 當期研究文章週報
 
 ---
 
-- [2026-11-12](journal/ES_daily/20261112_geoscience_daily.html)
-- [2026-11-11](journal/ES_daily/20261111_geoscience_daily.html)
-- [2026-11-10](journal/ES_daily/20261110_geoscience_daily.html)
-- [2026-11-07](journal/ES_daily/20261107_geoscience_daily.html)
-- [2026-11-06](journal/ES_daily/20261106_geoscience_daily.html)
-- [2026-11-05](journal/ES_daily/20261105_geoscience_daily.html)
-- [2026-11-04](journal/ES_daily/20261104_geoscience_daily.html)
-- [2026-11-03](journal/ES_daily/20261103_geoscience_daily.html)
-- [2026-10-31](journal/ES_daily/20261031_geoscience_daily.html)
-- [2026-10-30](journal/ES_daily/20261030_geo_atmo.html)
+- [2026-11-12](journal/earth-science_daily/20261112_geoscience_daily.html)
+- [2026-11-11](journal/earth-science_daily/20261111_geoscience_daily.html)
+- [2026-11-10](journal/earth-science_daily/20261110_geoscience_daily.html)
+- [2026-11-07](journal/earth-science_daily/20261107_geoscience_daily.html)
+- [2026-11-06](journal/earth-science_daily/20261106_geoscience_daily.html)
+- [2026-11-05](journal/earth-science_daily/20261105_geoscience_daily.html)
+- [2026-11-04](journal/earth-science_daily/20261104_geoscience_daily.html)
+- [2026-11-03](journal/earth-science_daily/20261103_geoscience_daily.html)
+- [2026-10-31](journal/earth-science_daily/20261031_geoscience_daily.html)
+- [2026-10-30](journal/earth-science_daily/20261030_geo_atmo.html)
 
 ---
 
