@@ -19,29 +19,47 @@ Science and Nature 當期研究文章週報
 
 ---
 
-- [2026-11-06](journal/weekly_journal_2026-11-06.html)
-- [2026-10-30](journal/weekly_journal_2026-10-30.html)
-- [2026-10-23](journal/weekly_journal_2026-10-23.html)
-- [2026-10-16](journal/weekly_journal_2026-10-16.html)
-- [2026-10-09](journal/weekly_journal_2026-10-09.html)
-- [2026-10-02](journal/weekly_journal_2026-10-02.html)
-- [2026-09-25](journal/weekly_journal_2026-09-25.html)
-- [2026-09-18](journal/weekly_journal_2026-09-18.html)
-- [2026-09-11](journal/weekly_journal_2026-09-11.html)
-- [2026-09-04](journal/weekly_journal_2026-09-04.html)
-- [2026-08-28](journal/weekly_journal_2026-08-28.html)
-- [2026-08-21](journal/weekly_journal_2026-08-21.html)
-- [2026-08-14](journal/weekly_journal_2026-08-14.html)
-- [2026-08-07](journal/weekly_journal_2026-08-07.html)
-- [2026-07-31](journal/weekly_journal_2026-07-31.html)
-- [2026-07-24](journal/weekly_journal_2026-07-24.html)
-- [2026-07-17](journal/weekly_journal_2026-07-17.html)
-- [2026-07-09](journal/weekly_journal_2026-07-09.html)
-- [2026-07-04](journal/weekly_journal_2026-07-04.html)
-- [2026-06-26](journal/weekly_journal_2026-06-26.html)
-- [2026-06-18](journal/weekly_journal_2026-06-18.html)
-- [2026-06-11](journal/weekly_journal_2026-06-11.html)
-- [2026-06-08](journal/weekly_journal_2026-06-08.html)
+- [2026-11-06](journal/weekly/weekly_journal_2026-11-06.html)
+- [2026-10-30](journal/weekly/weekly_journal_2026-10-30.html)
+- [2026-10-23](journal/weekly/weekly_journal_2026-10-23.html)
+- [2026-10-16](journal/weekly/weekly_journal_2026-10-16.html)
+- [2026-10-09](journal/weekly/weekly_journal_2026-10-09.html)
+- [2026-10-02](journal/weekly/weekly_journal_2026-10-02.html)
+- [2026-09-25](journal/weekly/weekly_journal_2026-09-25.html)
+- [2026-09-18](journal/weekly/weekly_journal_2026-09-18.html)
+- [2026-09-11](journal/weekly/weekly_journal_2026-09-11.html)
+- [2026-09-04](journal/weekly/weekly_journal_2026-09-04.html)
+- [2026-08-28](journal/weekly/weekly_journal_2026-08-28.html)
+- [2026-08-21](journal/weekly/weekly_journal_2026-08-21.html)
+- [2026-08-14](journal/weekly/weekly_journal_2026-08-14.html)
+- [2026-08-07](journal/weekly/weekly_journal_2026-08-07.html)
+- [2026-07-31](journal/weekly/weekly_journal_2026-07-31.html)
+- [2026-07-24](journal/weekly/weekly_journal_2026-07-24.html)
+- [2026-07-17](journal/weekly/weekly_journal_2026-07-17.html)
+- [2026-07-09](journal/weekly/weekly_journal_2026-07-09.html)
+- [2026-07-04](journal/weekly/weekly_journal_2026-07-04.html)
+- [2026-06-26](journal/weekly/weekly_journal_2026-06-26.html)
+- [2026-06-18](journal/weekly/weekly_journal_2026-06-18.html)
+- [2026-06-11](journal/weekly/weekly_journal_2026-06-11.html)
+- [2026-06-08](journal/weekly/weekly_journal_2026-06-08.html)
+
+---
+
+# 地球科學日報
+每日地球科學／大氣科學研究速報
+
+---
+
+- [2026-11-12](journal/ES_daily/20261112_geoscience_daily.html)
+- [2026-11-11](journal/ES_daily/20261111_geoscience_daily.html)
+- [2026-11-10](journal/ES_daily/20261110_geoscience_daily.html)
+- [2026-11-07](journal/ES_daily/20261107_geoscience_daily.html)
+- [2026-11-06](journal/ES_daily/20261106_geoscience_daily.html)
+- [2026-11-05](journal/ES_daily/20261105_geoscience_daily.html)
+- [2026-11-04](journal/ES_daily/20261104_geoscience_daily.html)
+- [2026-11-03](journal/ES_daily/20261103_geoscience_daily.html)
+- [2026-10-31](journal/ES_daily/20261031_geoscience_daily.html)
+- [2026-10-30](journal/ES_daily/20261030_geo_atmo.html)
 
 ---
 
